@@ -1,0 +1,4 @@
+[submodule "submodules/yagsl-example"]
+	path = submodules/yagsl-example
+	url = https://github.com/BroncBotz3481/YAGSL-Example.git
+	branch = 2024
