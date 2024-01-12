@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.commands.Autos;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveFixedDistanceCommand;
 import frc.robot.commands.test.RotationTestCommand;
@@ -84,6 +83,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.autoPathGroup(swerveSubsystem);
+    return swerveSubsystem.getAutonomousCommand("New Path", true);
   }
 }
