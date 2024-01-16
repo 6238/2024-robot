@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.io.File;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
 
 /**
@@ -33,6 +35,8 @@ public class RobotContainer {
   File jsonDirectory;
 
   CommandXboxController driverXbox = new CommandXboxController(0);
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  DoubleSubscriber visionTopic = inst.getDoubleTopic("/vision/right_joystick").subscribe(0.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,8 +47,7 @@ public class RobotContainer {
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.01), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.01), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.01)); // Rotation for FRC is CCW-positive, so need to invert sign
-
+      () -> MathUtil.applyDeadband(visionTopic.get(), 0.01)); // Use vision to do the directional control
     swerveSubsystem.setDefaultCommand(driveCmd);
   }
 
