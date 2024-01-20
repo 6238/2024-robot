@@ -41,9 +41,9 @@ public class RobotContainer {
 
     DriveCommand driveCmd = new DriveCommand(
       swerveSubsystem,
-      () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.01), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.01), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.01)); // Rotation for FRC is CCW-positive, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.02)); // Rotation for FRC is CCW-positive, so need to invert sign
 
     swerveSubsystem.setDefaultCommand(driveCmd);
   }
