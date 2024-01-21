@@ -21,8 +21,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private String m_autoSelected;
-  private final SendableChooser<String> autoChooser = new SendableChooser<>();
 
   private RobotContainer m_robotContainer;
 
@@ -35,15 +33,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    // Put the auto chooser on the dashboard
-    File pathPlannerDir = new File(Filesystem.getDeployDirectory(), "pathplanner/paths");
-    String[] paths = pathPlannerDir.list();
-    for (String path: paths) {
-      String pathName = path.split("\\.")[0];
-      autoChooser.addOption(pathName, pathName);
-    }
-    SmartDashboard.putData("Auto routine", autoChooser);
   }
 
   /**
@@ -72,9 +61,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autoSelected = autoChooser.getSelected();
-    System.out.println("Auto selected: " + m_autoSelected);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected);
+    
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
