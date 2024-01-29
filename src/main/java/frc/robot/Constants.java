@@ -23,4 +23,6 @@ public final class Constants {
 
   public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI; // Math.PI radians/sec
 
+  public static final String PHOTONCAMERA_NAME = "front";
+
 }

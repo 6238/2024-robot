@@ -12,7 +12,8 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true,
-    "**/*~": true
+    "**/*~": true,
+    "submodules/yagsl-example/": true
   },
   "java.test.config": [
     {
