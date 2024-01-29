@@ -1,0 +1,7 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# DO NOT CHANGE THIS WITHOUT ALSO UPDATING DEPENDENCIES ON THE ORANGEPI!
+
+opencv-contrib-python~=4.9.0.80
+numpy~=1.26.3
+pyntcore~=2023.4.3.0
+simple-pid~=2.0.0

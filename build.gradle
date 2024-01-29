@@ -1,6 +1,8 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2024.1.1"
+    // id 'org.hidetake.ssh' version '2.11.2'
+
 }
 
 java {
@@ -99,3 +101,22 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+
+// // SSH into OPi
+// remotes {
+//     opi {
+//         host = 'photonvision.local'
+//     }
+// }
+
+// deployVision {
+//     doLast {
+//         ssh.run {
+//             session(remotes.opi) {
+//                 put from: vision into: "/srv/vision"
+//                 execute "sudo service restart popcornvision"
+//             }
+//         }
+//     }
+// }
