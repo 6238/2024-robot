@@ -17,8 +17,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,6 +38,8 @@ public class RobotContainer {
 
   CommandXboxController driverXbox = new CommandXboxController(0);
 
+  private final SendableChooser<Command> autoChooser; 
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -41,11 +47,14 @@ public class RobotContainer {
 
     DriveCommand driveCmd = new DriveCommand(
       swerveSubsystem,
-      () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.01), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.01), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.01)); // Rotation for FRC is CCW-positive, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.02)); // Rotation for FRC is CCW-positive, so need to invert sign
 
     swerveSubsystem.setDefaultCommand(driveCmd);
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Path", autoChooser);
   }
 
   /**
@@ -81,8 +90,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand(String autoRoutine) {
+  public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return swerveSubsystem.getAutonomousCommand(autoRoutine, true);
+    return autoChooser.getSelected();
   }
 }
