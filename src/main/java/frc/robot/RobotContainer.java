@@ -6,7 +6,11 @@ package frc.robot;
 
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveFixedDistanceCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.SpinUpCommand;
 import frc.robot.commands.test.RotationTestCommand;
+import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +39,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.PHOTONCAMERA_NAME, swerveSubsystem);
+  private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
 
   File jsonDirectory;
 
@@ -80,12 +85,15 @@ public class RobotContainer {
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
     // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
+    driverXbox.b().onTrue(new IntakeCommand(intake));
+    driverXbox.a().whileTrue(new SpinUpCommand(intake));
+    driverXbox.rightTrigger().onTrue(new ShootCommand(intake));
     // driverXbox.a().onTrue(new RotationTestCommand(swerveSubsystem));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
-    //   new DriveFixedDistanceCommand(swerveSubsystem, 1, 0, 1),
-    //   new DriveFixedDistanceCommand(swerveSubsystem, 1, 90, 1),
-    //   new DriveFixedDistanceCommand(swerveSubsystem, 1, 180, 1),
-    //   new DriveFixedDistanceCommand(swerveSubsystem, 1, 270, 1)));
+    //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 0, 1),
+    //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 90, 1),
+    //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 180, 1),
+    //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 270, 1)));
   }
 
   /**
