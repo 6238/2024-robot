@@ -25,4 +25,17 @@ public final class Constants {
 
   public static final String PHOTONCAMERA_NAME = "front";
 
+  public static class IDs {
+    public static final int INTAKE_MOTOR = 4;
+    public static final int OUTTAKE_TOP_MOTOR = 2;
+    public static final int OUTTAKE_BOTTOM_MOTOR = 3;
+  }
+
+  public static class Speeds {
+    public static final double INTAKE_SPEED = 0.5;
+    public static final double OUTTAKE_SPEED = -0.75; 
+  }
+  public static final double MIN_DELTA_V = 0;
+  public static final double MIN_V = 60;
+  public static final double SHOOT_DELAY = 1;
 }
