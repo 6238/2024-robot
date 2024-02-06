@@ -24,11 +24,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private CANSparkBase intakeMotor;
   private CANSparkBase outtakeTopMotor;
   private CANSparkBase outtakeBottomMotor;
-  AnalogInput analog = new AnalogInput(0);
   private SparkPIDController m_pidController;
   private RelativeEncoder m_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
-  public DigitalInput limitSwitch = new DigitalInput(0);
+  public DigitalInput limitSwitch = new DigitalInput(9);
 
   /** Creates a new ExampleSubsystem. */
   public IntakeOuttakeSubsystem() {
@@ -41,7 +40,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     outtakeTopMotor.restoreFactoryDefaults();
     outtakeBottomMotor.restoreFactoryDefaults();
 
-    intakeMotor.setInverted(true);
+    intakeMotor.setInverted(false);
 
     intakeMotor.setSmartCurrentLimit(80);
     outtakeTopMotor.setSmartCurrentLimit(80);
