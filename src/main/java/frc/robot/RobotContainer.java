@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveFixedDistanceCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.NudgeIntake;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpCommand;
 import frc.robot.commands.test.RotationTestCommand;
@@ -14,9 +15,11 @@ import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -94,6 +97,9 @@ public class RobotContainer {
     //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 90, 1),
     //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 180, 1),
     //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 270, 1)));
+
+    // Nudge the intake
+    driverXbox.y().onTrue(Commands.race(new NudgeIntake(intake), new WaitCommand(0.2)));
   }
 
   /**
