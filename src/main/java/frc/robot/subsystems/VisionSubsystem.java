@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class VisionSubsystem extends SubsystemBase {
     private AprilTagFieldLayout layout;
     private PhotonCamera cam;
-    private final Transform3d robotToCam = new Transform3d(new Translation3d(0.23, 0, 0), new Rotation3d(0, 0, 0));
+    private final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0.23, 0), new Rotation3d(Math.toRadians(30), 0, 0));
     private PhotonPoseEstimator poseEst;
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
@@ -47,7 +47,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
             if (pose.isPresent()) {
-                swerve.addVisionPose(pose.get());
+                // swerve.addVisionPose(pose.get());
                 field.setRobotPose(pose.get().estimatedPose.toPose2d());
                 SmartDashboard.putData("VisionField", field);
             }
