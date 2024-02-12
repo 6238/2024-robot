@@ -28,7 +28,10 @@ import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -42,6 +45,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.PHOTONCAMERA_NAME, swerveSubsystem);
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  DoubleSubscriber visionTopic = inst.getDoubleTopic("/vision/right_joystick").subscribe(0.0);
+
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
 
   File jsonDirectory;
@@ -59,7 +65,12 @@ public class RobotContainer {
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.02)); // Rotation for FRC is CCW-positive, so need to invert sign
+      () -> 
+        driverXbox.getHID().getLeftTriggerAxis() > 0 && visionTopic.get() != 0 ? visionTopic.get() :
+        MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08)
+      ); // Rotation for FRC is CCW-positive, so need to invert sign
+      
+      //       () -> MathUtil.applyDeadband(visionTopic.get(), 0.01)); // Use vision to do the directional control
 
     swerveSubsystem.setDefaultCommand(driveCmd);
 
@@ -87,8 +98,13 @@ public class RobotContainer {
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
     // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
-    driverXbox.b().onTrue(new IntakeCommand(intake));
-    driverXbox.a().whileTrue(new SpinUpCommand(intake));
+    driverXbox.b().onTrue(new SequentialCommandGroup(
+      new IntakeCommand(intake),
+      new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
+      new WaitCommand(0.5),
+      new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0)),
+      new SpinUpCommand(intake)
+    ));
     driverXbox.rightTrigger().onTrue(new ShootCommand(intake));
     // driverXbox.a().onTrue(new RotationTestCommand(swerveSubsystem));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
