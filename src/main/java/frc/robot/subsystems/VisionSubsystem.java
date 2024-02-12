@@ -52,7 +52,5 @@ public class VisionSubsystem extends SubsystemBase {
                 SmartDashboard.putData("VisionField", field);
             }
         }
-
     }
-
 }

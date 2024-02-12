@@ -65,13 +65,17 @@ public class RobotContainer {
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> 
-        driverXbox.getHID().getLeftTriggerAxis() > 0 && visionTopic.get() != 0 ? visionTopic.get() :
-        MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08)
-      ); // Rotation for FRC is CCW-positive, so need to invert sign
+      () -> { // Function to return desired rotation speed -- might be vision-based, might be joystick-based
+        double visionInput = visionTopic.get();
+        if (driverXbox.getHID().getLeftTriggerAxis() > 0 && visionInput != 0) {
+          // Use vision if left trigger is pressed and it sees a note
+          return visionInput;
+        } else {
+          return MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08);
+        }
+      }      
+    ); // Rotation for FRC is CCW-positive, so need to invert sign
       
-      //       () -> MathUtil.applyDeadband(visionTopic.get(), 0.01)); // Use vision to do the directional control
-
     swerveSubsystem.setDefaultCommand(driveCmd);
 
     autoChooser = AutoBuilder.buildAutoChooser();
