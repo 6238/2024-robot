@@ -11,12 +11,15 @@ import frc.robot.commands.NudgeIntake;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpCommand;
 import frc.robot.commands.test.RotationTestCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmStates;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -49,6 +52,7 @@ public class RobotContainer {
   DoubleSubscriber visionTopic = inst.getDoubleTopic("/vision/right_joystick").subscribe(0.0);
 
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
+  private final ArmSubsystem arm = new ArmSubsystem();
 
   File jsonDirectory;
 
@@ -92,24 +96,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on rel 
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
-    // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
-    driverXbox.b().onTrue(new SequentialCommandGroup(
-      new IntakeCommand(intake),
-      new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
-      new WaitCommand(0.5),
-      new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0)),
-      new SpinUpCommand(intake)
-    ));
-    driverXbox.rightTrigger().onTrue(new ShootCommand(intake));
+    // #region testing commands
+    // // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
+    // driverXbox.b().onTrue(new SequentialCommandGroup(
+    //   new IntakeCommand(intake),
+    //   new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
+    //   new WaitCommand(0.5),
+    //   new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0)),
+    //   new SpinUpCommand(intake)
+    // ));
+    // driverXbox.rightTrigger().onTrue(new ShootCommand(intake));
     // driverXbox.a().onTrue(new RotationTestCommand(swerveSubsystem));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
     //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 0, 1),
@@ -118,7 +116,27 @@ public class RobotContainer {
     //   // new DriveFixedDistanceCommand(swerveSubsystem, 1, 270, 1)));
 
     // Nudge the intake
-    driverXbox.y().onTrue(Commands.race(new NudgeIntake(intake), new WaitCommand(0.2)));
+    // driverXbox.y().onTrue(Commands.race(new NudgeIntake(intake), new WaitCommand(0.2)));
+    // #endregion testing commands
+    
+    // DANNY CONTROLS
+    // Sticks for movement and rotation - this is already handled by the library
+
+    // Right trigger to intake - lower arm, spin
+    driverXbox.rightTrigger().onTrue(new SequentialCommandGroup(
+        new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
+        new WaitCommand(0.5), // Wait half a second
+        new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
+        ); 
+    // B to shoot
+    driverXbox.b().onTrue(new ShootCommand(intake));
+    // Left trigger to move to shooting position
+    driverXbox.leftTrigger().onTrue(new ParallelCommandGroup(arm.setAngleCommand(ArmStates.SHOOT), new SpinUpCommand(intake)));
+    // Left bumper moves to stowed position
+    driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
+    // Right bumper stops intake
+    driverXbox.rightBumper().onTrue(intake.stopCommand());
   }
 
   /**
