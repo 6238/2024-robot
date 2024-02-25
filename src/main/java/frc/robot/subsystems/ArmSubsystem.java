@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
     private final PositionVoltage voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
     // Brake request to set when neutral
 
-    private double kP = 0.;
+    private double kP = 0.3;
     private double kI = 0;
     private double kD = 0;
     private double setpoint = 0;
