@@ -79,6 +79,8 @@ public class RobotContainer {
         }
       }      
     ); // Rotation for FRC is CCW-positive, so need to invert sign
+
+    arm.setDefaultCommand(arm.runPIDCommand());
       
     swerveSubsystem.setDefaultCommand(driveCmd);
 
@@ -98,6 +100,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
+    driverXbox.a().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // #region testing commands
     // // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
@@ -123,18 +126,19 @@ public class RobotContainer {
     // Sticks for movement and rotation - this is already handled by the library
 
     // Right trigger to intake - lower arm, spin
-    driverXbox.rightTrigger().onTrue(new SequentialCommandGroup(
+    driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
         new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
+        new InstantCommand(() -> arm.setAngleCommand(ArmStates.STOW)),
         new WaitCommand(0.5), // Wait half a second
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
         ); 
     // B to shoot
-    driverXbox.b().onTrue(new ShootCommand(intake));
+    driverXbox.rightTrigger().onTrue(new ShootCommand(intake));
     // Left trigger to move to shooting position
-    driverXbox.leftTrigger().onTrue(new ParallelCommandGroup(arm.setAngleCommand(ArmStates.SHOOT), new SpinUpCommand(intake)));
+    driverXbox.b().onTrue(new ParallelCommandGroup(arm.setAngleCommand(ArmStates.SHOOT), new SpinUpCommand(intake)));
     // Left bumper moves to stowed position
-    driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
+    // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
     driverXbox.rightBumper().onTrue(intake.stopCommand());
   }

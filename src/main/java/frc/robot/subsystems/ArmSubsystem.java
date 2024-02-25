@@ -38,13 +38,12 @@ public class ArmSubsystem extends SubsystemBase {
     private final PositionVoltage voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
     // Brake request to set when neutral
 
-    private double kP = 0.3;
+    private double kP = 0.1;
     private double kI = 0;
-    private double kD = 0;
+    private double kD = 0.01;
     private double setpoint = 0;
 
     private TalonFXConfiguration configs = new TalonFXConfiguration();
-    Slot0Configs slot0Configs = new Slot0Configs();
 
     private final TalonFX motor1 = new TalonFX(11);
     private final TalonFX motor2 = new TalonFX(12);
@@ -54,27 +53,26 @@ public class ArmSubsystem extends SubsystemBase {
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
-        entry(ArmStates.INTAKE, 0.1),
-        entry(ArmStates.SHOOT, 0.175),
-        entry(ArmStates.STOW, 0.25));
+        entry(ArmStates.INTAKE, -5.0),
+        entry(ArmStates.SHOOT, 25.0),
+        entry(ArmStates.STOW, 90.0));
 
     /** Creates a new ExampleSubsystem. */
     public ArmSubsystem() {
 
-        double motorToArm = 78.72; // motor turns needed for the arm to turn fully
+        double motorToArm = .2395; // motor turns needed for the arm to turn fully
 
         configs.Feedback.SensorToMechanismRatio = motorToArm;
 
-        slot0Configs.kP = kP;
-        slot0Configs.kI = kI;
-        slot0Configs.kD = kD;
+        configs.Slot0.kP = kP;
+        configs.Slot0.kI = kI;
+        configs.Slot0.kD = kD;
 
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         SmartDashboard.putNumber("kP", kP);
         SmartDashboard.putNumber("kI", kI);
         SmartDashboard.putNumber("kD", kD);
-        SmartDashboard.putNumber("setpoint", setpoint);
 
         // Peak output of 8 volts
         configs.Voltage.PeakForwardVoltage = 8;
@@ -93,7 +91,6 @@ public class ArmSubsystem extends SubsystemBase {
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
             status = motor1.getConfigurator().apply(configs);
-            status = motor1.getConfigurator().apply(slot0Configs);
             if (status.isOK())
                 break;
         }
@@ -102,9 +99,11 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         // Set wherever we are on init to 0
-        motor1.setPosition((sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) / 4096);
-
         sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+        setpoint = 360 * ((sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) / 4096);
+        SmartDashboard.putNumber("setpoint", setpoint);
+        motor1.setPosition(setpoint);
+
     }
 
     public Command runPIDCommand() {
@@ -115,13 +114,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command increaseSetpointCommand() {
         return runOnce(() -> {
-            this.setpoint += 1; // one more motor turn
+            this.setpoint += 5; // one more motor turn
         });
     }
 
     public Command decreaseSetpointCommand() {
         return Commands.runOnce(() -> {
-            this.setpoint -= 1; // one more motor turn
+            this.setpoint -= 5; // one more motor turn
         });
     }
 
@@ -131,8 +130,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command setAngleCommand(Double angle) {
         return Commands.runOnce(() -> {
-            this.setAngle(angle);
-            motor1.setControl(voltagePosition.withPosition(setpoint));
+            this.setpoint = angle;
         });
         // don't use this.runOnce because it implicitly requires this, which is not what
         // we want (don't stop the loop to change the setpt)
@@ -140,8 +138,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command setAngleCommand(ArmStates state){
         return Commands.runOnce(() -> {
-            this.setAngle(ANGLES.get(state));
-            motor1.setControl(voltagePosition.withPosition(setpoint));
+            this.setpoint = ANGLES.get(state);
         });
         // don't use this.runOnce because it implicitly requires this, which is not what
         // we want (don't stop the loop to change the setpt)
@@ -152,19 +149,19 @@ public class ArmSubsystem extends SubsystemBase {
         // This method will be called once per scheduler run
 
         // Pull PD values from dashboard
-        // this.kP = SmartDashboard.getNumber("kP", kP);
-        // this.kI = SmartDashboard.getNumber("kI", kI);
-        // this.kD = SmartDashboard.getNumber("kD", kD);
+        this.kP = SmartDashboard.getNumber("kP", kP);
+        this.kI = SmartDashboard.getNumber("kI", kI);
+        this.kD = SmartDashboard.getNumber("kD", kD);
         SmartDashboard.putNumber("setpoint", setpoint);
 
         // this.setpoint = SmartDashboard.getNumber("setpoint", setpoint);
 
         // Update our PID controller
-        // configs.Slot0.kP = this.kP;
-        // configs.Slot0.kI = this.kI;
-        // configs.Slot0.kD = this.kD;
+        configs.Slot0.kP = this.kP;
+        configs.Slot0.kI = this.kI;
+        configs.Slot0.kD = this.kD;
         // motor1.getConfigurator().apply(configs);
-        // motor1.getConfigurator().apply(configs.Slot0);
+        motor1.getConfigurator().apply(configs.Slot0);
 
         SmartDashboard.putNumberArray("motor current draw", new double[] { motor1.getTorqueCurrent().getValue(),
                 motor2.getTorqueCurrent().getValue(), motor3.getTorqueCurrent().getValue() });
