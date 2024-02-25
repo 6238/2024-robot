@@ -31,7 +31,7 @@ public class ShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setMotors(100, Constants.Speeds.OUTTAKE_SPEED);
+    m_subsystem.setMotors(-100, Constants.Speeds.OUTTAKE_SPEED);
     timer = new Timer();
     timer.start();
   }
