@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.DoubleSubscriber;
@@ -62,6 +63,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    NamedCommands.registerCommand("setAngleIntake", arm.setAngleCommand(ArmStates.INTAKE));
+    NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(intake));
+    NamedCommands.registerCommand("setAngleStow", arm.setAngleCommand(ArmStates.STOW));
     // Configure the trigger bindings
     configureBindings();
 
@@ -100,7 +104,10 @@ public class RobotContainer {
   private void configureBindings() {
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
+    driverXbox.y().onTrue(arm.setAngleCommand(100.0));
     driverXbox.a().onTrue(arm.setAngleCommand(ArmStates.STOW));
+    driverXbox.x().whileTrue(intake.ejectCommand());
+    driverXbox.x().onFalse(intake.stopCommand());
     // #region testing commands
     // // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
@@ -128,8 +135,8 @@ public class RobotContainer {
     // Right trigger to intake - lower arm, spin
     driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
         new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        // arm.setAngleCommand(ArmStates.STOW),
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
-        new InstantCommand(() -> arm.setAngleCommand(ArmStates.STOW)),
         new WaitCommand(0.5), // Wait half a second
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
         ); 

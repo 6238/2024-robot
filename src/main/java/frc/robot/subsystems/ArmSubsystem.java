@@ -54,8 +54,8 @@ public class ArmSubsystem extends SubsystemBase {
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
         entry(ArmStates.INTAKE, -5.0),
-        entry(ArmStates.SHOOT, 25.0),
-        entry(ArmStates.STOW, 90.0));
+        entry(ArmStates.SHOOT, 18.0),
+        entry(ArmStates.STOW, 75.0));
 
     /** Creates a new ExampleSubsystem. */
     public ArmSubsystem() {
@@ -79,8 +79,8 @@ public class ArmSubsystem extends SubsystemBase {
         configs.Voltage.PeakReverseVoltage = -8;
 
         // Peak output of 130 amps
-        configs.TorqueCurrent.PeakForwardTorqueCurrent = 130;
-        configs.TorqueCurrent.PeakReverseTorqueCurrent = 130;
+        configs.TorqueCurrent.PeakForwardTorqueCurrent = 10;
+        configs.TorqueCurrent.PeakReverseTorqueCurrent = 10;
 
         // Set motors 2 and 3 to follow motor 1
         motor2.setControl(new Follower(motor1.getDeviceID(), false));

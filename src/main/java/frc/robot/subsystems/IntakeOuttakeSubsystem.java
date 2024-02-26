@@ -87,6 +87,12 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     });
   }
 
+  public Command ejectCommand() {
+    return runOnce(() -> {
+      this.setMotors(-Constants.Speeds.INTAKE_SPEED, 0);
+    });
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("current", intakeMotor.getOutputCurrent());

@@ -36,6 +36,12 @@
       "open": false
     },
     "transitory": {
+      "PathPlanner": {
+        "open": true
+      },
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
         "Auto routine": {
           "open": true,

@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "setAngleShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpinUpCommand"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "note1 from sub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "note2 from sub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "note3 from sub"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
