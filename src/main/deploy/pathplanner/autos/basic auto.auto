@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.35,
+      "y": 5.54
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -14,19 +20,55 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeCommand"
+            "name": "SpinUpCommand"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 1.5
           }
         },
         {
           "type": "named",
           "data": {
             "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setAngleStow"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "note2 from sub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "go to final position"
           }
         }
       ]

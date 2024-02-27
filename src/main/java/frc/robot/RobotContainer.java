@@ -64,8 +64,13 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     NamedCommands.registerCommand("setAngleIntake", arm.setAngleCommand(ArmStates.INTAKE));
-    NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(intake));
+    NamedCommands.registerCommand("setAngleShoot", arm.setAngleCommand(ArmStates.SHOOT));
     NamedCommands.registerCommand("setAngleStow", arm.setAngleCommand(ArmStates.STOW));
+    NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(intake));
+    NamedCommands.registerCommand("SpinUpCommand", intake.startOutake());
+    NamedCommands.registerCommand("ShootCommand", new ShootCommand(intake));
+    NamedCommands.registerCommand("stopCommand", intake.stopCommand());
+
     // Configure the trigger bindings
     configureBindings();
 

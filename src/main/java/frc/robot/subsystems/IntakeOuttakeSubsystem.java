@@ -81,6 +81,12 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     outtakeTopMotor.set(outtake);
   }
 
+  public Command startOutake() {
+    return runOnce(() -> {
+      this.setMotors(0, Constants.Speeds.OUTTAKE_SPEED);
+    });
+  }
+
   public Command stopCommand() {
     return runOnce(() -> {
       this.setMotors(0, 0);
