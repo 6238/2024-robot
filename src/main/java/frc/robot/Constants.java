@@ -33,12 +33,12 @@ public final class Constants {
 
   public static class Speeds {
     public static final double INTAKE_SPEED = -0.65;
-    public static final double OUTTAKE_SPEED = -0.55; 
+    public static final double OUTTAKE_SPEED = -0.47; 
   }
   public static final double MIN_DELTA_V = 0;
   public static final double MIN_V = 60;
   public static final double SHOOT_DELAY = 1;
   public static final double NUDGE_SPEED = 0.4;
 
-  public static final int ARM_ENCODER_ZERO = 1877;
+  public static final int ARM_ENCODER_ZERO = 1907;
 }

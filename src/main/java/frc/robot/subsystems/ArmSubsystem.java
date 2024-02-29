@@ -39,8 +39,8 @@ public class ArmSubsystem extends SubsystemBase {
     // Brake request to set when neutral
 
     private double kP = 0.1;
-    private double kI = 0;
-    private double kD = 0.01;
+    private double kI = 0.0001;
+    private double kD = 0.005;
     private double setpoint = 0;
 
     private TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -53,8 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
-        entry(ArmStates.INTAKE, -5.0),
-        entry(ArmStates.SHOOT, 18.0),
+        entry(ArmStates.INTAKE, -3.0),
+        entry(ArmStates.SHOOT, 21.0),
         entry(ArmStates.STOW, 75.0));
 
     /** Creates a new ExampleSubsystem. */
