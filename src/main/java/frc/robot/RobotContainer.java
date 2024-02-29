@@ -140,7 +140,7 @@ public class RobotContainer {
     // Right trigger to intake - lower arm, spin
     driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
         new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
-        // arm.setAngleCommand(ArmStates.STOW),
+        arm.setAngleCommand(ArmStates.STOW),
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
         new WaitCommand(0.5), // Wait half a second
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
