@@ -34,10 +34,13 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -71,6 +74,18 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(intake));
     NamedCommands.registerCommand("stopCommand", intake.stopCommand());
 
+    NamedCommands.registerCommand("zeroRight", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 + 60 : 60).in(Radians)))
+    );
+    NamedCommands.registerCommand("zeroCenter", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 : 0).in(Radians)))
+    );
+    NamedCommands.registerCommand("zeroLeft", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 - 60 : -60).in(Radians)))
+    );
+    NamedCommands.registerCommand("reZero", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(swerveSubsystem.getPose().getRotation().getDegrees() - 180).in(Radians)))
+    );
     // Configure the trigger bindings
     configureBindings();
 
@@ -146,7 +161,10 @@ public class RobotContainer {
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
         ); 
     // B to shoot
-    driverXbox.rightTrigger().onTrue(new ShootCommand(intake));
+    driverXbox.rightTrigger().onTrue(new SequentialCommandGroup(
+      new ShootCommand(intake),
+      arm.setAngleCommand(ArmStates.STOW)
+    ));
     // Left trigger to move to shooting position
     driverXbox.b().onTrue(new ParallelCommandGroup(arm.setAngleCommand(ArmStates.SHOOT), new SpinUpCommand(intake)));
     // Left bumper moves to stowed position

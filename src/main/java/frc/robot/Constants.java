@@ -32,7 +32,7 @@ public final class Constants {
   }
 
   public static class Speeds {
-    public static final double INTAKE_SPEED = -0.65;
+    public static final double INTAKE_SPEED = -0.6;
     public static final double OUTTAKE_SPEED = -0.47; 
   }
   public static final double MIN_DELTA_V = 0;

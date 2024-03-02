@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -75,12 +77,15 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("kD", kD);
 
         // Peak output of 8 volts
-        configs.Voltage.PeakForwardVoltage = 8;
-        configs.Voltage.PeakReverseVoltage = -8;
+        configs.Voltage.PeakForwardVoltage = 3;
+        configs.Voltage.PeakReverseVoltage = -3;
+
 
         // Peak output of 130 amps
-        configs.TorqueCurrent.PeakForwardTorqueCurrent = 10;
-        configs.TorqueCurrent.PeakReverseTorqueCurrent = 10;
+        // configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+        // configs.CurrentLimits.SupplyCurrentThreshold = 1;
+        // configs.CurrentLimits.SupplyTimeThreshold = .01;
+        // configs.CurrentLimits.SupplyCurrentLimit = 0;
 
         // Set motors 2 and 3 to follow motor 1
         motor2.setControl(new Follower(motor1.getDeviceID(), false));
@@ -91,6 +96,8 @@ public class ArmSubsystem extends SubsystemBase {
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
             status = motor1.getConfigurator().apply(configs);
+            status = motor2.getConfigurator().apply(configs);
+            status = motor3.getConfigurator().apply(configs);
             if (status.isOK())
                 break;
         }
@@ -161,7 +168,7 @@ public class ArmSubsystem extends SubsystemBase {
         configs.Slot0.kI = this.kI;
         configs.Slot0.kD = this.kD;
         // motor1.getConfigurator().apply(configs);
-        motor1.getConfigurator().apply(configs.Slot0);
+        //motor1.getConfigurator().apply(configs.Slot0);
 
         SmartDashboard.putNumberArray("motor current draw", new double[] { motor1.getTorqueCurrent().getValue(),
                 motor2.getTorqueCurrent().getValue(), motor3.getTorqueCurrent().getValue() });

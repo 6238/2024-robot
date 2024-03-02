@@ -31,14 +31,12 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("initialize");
     m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("running");
   }
 
   // Called once the command ends or is interrupted.
