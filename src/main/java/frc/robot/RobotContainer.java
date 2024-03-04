@@ -64,6 +64,13 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser; 
 
+  // double invertIfRed(double value) {
+  //   var alliance = DriverStation.getAlliance();
+  //   var isRed = alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+  //   return 
+  //   return MathUtil.applyDeadband(isRed ? driverXbox.getLeftY() : -driverXbox.getLeftY(), 0.02); // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
+  // }
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     NamedCommands.registerCommand("setAngleIntake", arm.setAngleCommand(ArmStates.INTAKE));
@@ -89,7 +96,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    DriveCommand driveCmd = new DriveCommand(
+   DriveCommand driveCmd = new DriveCommand(
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
