@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.urcl.URCL;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -33,6 +35,8 @@ public class Robot extends TimedRobot {
 
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+    // TODO: You can pass in a Map<Integer, String> to alias CAN IDs to device names for easier reading
+    URCL.start();
   }
 
   /**
