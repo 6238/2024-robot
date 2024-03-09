@@ -31,8 +31,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import monologue.Logged;
 
-public class ArmSubsystem extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase implements Logged {
 
     // Initialize control requests
     // Position 0, at rest, no FOC, no FF, use config slot 0, always brake when in
@@ -170,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
         // motor1.getConfigurator().apply(configs);
         //motor1.getConfigurator().apply(configs.Slot0);
 
-        SmartDashboard.putNumberArray("motor current draw", new double[] { motor1.getTorqueCurrent().getValue(),
+        this.log("motor current draw", new double[] { motor1.getTorqueCurrent().getValue(),
                 motor2.getTorqueCurrent().getValue(), motor3.getTorqueCurrent().getValue() });
 
         SmartDashboard.putNumber("sensor value in turns", sensorTalon.getSelectedSensorPosition() * (1.0 / 4096.0));

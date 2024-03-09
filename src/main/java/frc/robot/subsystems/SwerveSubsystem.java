@@ -14,11 +14,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
+import monologue.Annotations.Log;
 
 import java.io.File;
 
@@ -32,7 +35,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
-public class SwerveSubsystem extends SubsystemBase
+public class SwerveSubsystem extends SubsystemBase implements Logged
 {
 
   /**
@@ -405,5 +408,10 @@ public class SwerveSubsystem extends SubsystemBase
 
   public void addVisionPose(EstimatedRobotPose pose) {
     swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+  }
+
+  @Log
+  public SwerveModuleState[] getModules() {
+    return swerveDrive.getStates();
   }
 }

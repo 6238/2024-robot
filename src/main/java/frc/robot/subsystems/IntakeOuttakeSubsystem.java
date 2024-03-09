@@ -15,18 +15,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IDs;
+import monologue.Logged;
+import monologue.Annotations.Log;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-public class IntakeOuttakeSubsystem extends SubsystemBase {
+public class IntakeOuttakeSubsystem extends SubsystemBase implements Logged {
   private CANSparkBase intakeMotor;
   private CANSparkBase outtakeTopMotor;
   private CANSparkBase outtakeBottomMotor;
   private SparkPIDController m_pidController;
   private RelativeEncoder m_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
+
+  @Log
   public DigitalInput limitSwitch = new DigitalInput(9);
 
   /** Creates a new ExampleSubsystem. */

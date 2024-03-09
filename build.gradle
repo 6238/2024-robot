@@ -71,6 +71,9 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'com.github.shueja:Monologue:v1.0.0-beta5'
+
 }
 
 test {
@@ -120,3 +123,7 @@ tasks.withType(JavaCompile) {
 //         }
 //     }
 // }
+
+repositories {
+  maven { url 'https://jitpack.io' }
+}

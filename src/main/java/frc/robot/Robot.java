@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import monologue.Monologue;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -53,6 +54,12 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    // setFileOnly is used to shut off NetworkTables broadcasting for most logging calls.
+    // Basing this condition on the connected state of the FMS is a suggestion only.
+    Monologue.setFileOnly(DriverStation.isFMSAttached());
+    // This method needs to be called periodically, or no logging annotations will process properly.
+    Monologue.updateAll();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
