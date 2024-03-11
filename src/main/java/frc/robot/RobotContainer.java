@@ -81,18 +81,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(intake));
     NamedCommands.registerCommand("stopCommand", intake.stopCommand());
 
-    NamedCommands.registerCommand("zeroRight", new InstantCommand(() ->
-      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 + 60 : 60).in(Radians)))
+    NamedCommands.registerCommand("zeroGyro", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset())
     );
-    NamedCommands.registerCommand("zeroCenter", new InstantCommand(() ->
-      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 : 0).in(Radians)))
-    );
-    NamedCommands.registerCommand("zeroLeft", new InstantCommand(() ->
-      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 - 60 : -60).in(Radians)))
-    );
-    NamedCommands.registerCommand("reZero", new InstantCommand(() ->
-      swerveSubsystem.setGyroOffset(Degrees.of(swerveSubsystem.getPose().getRotation().getDegrees() - 180).in(Radians)))
-    );
+
     // Configure the trigger bindings
     configureBindings();
 
