@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -14,8 +15,10 @@ public class DriveCommand extends Command {
 
     private final DoubleSupplier vX, vY;
     private final DoubleSupplier rotationSpeed;
+    public double radians;
+    public boolean angleControl;
 
-    public DriveCommand(SwerveSubsystem subsys, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier rotationSpeed) {
+    public DriveCommand(SwerveSubsystem subsys, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier rotationSpeed, boolean angleControl, double radians) {
         this.subsys = subsys;
 
         this.vX = vX;
@@ -33,8 +36,15 @@ public class DriveCommand extends Command {
         double driveX = Math.pow(vX.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
         double rotation = rotationSpeed.getAsDouble();
 
-        Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
-
-        subsys.drive(translation, rotation * Constants.MAX_ANGULAR_VELOCITY, true);
+        if (angleControl == false) {
+            Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
+            subsys.drive(translation, rotation * Constants.MAX_ANGULAR_VELOCITY, true);
+        }
+        else {
+            subsys.driveFieldOriented(subsys.getTargetSpeeds(driveX * subsys.maximumSpeed,
+                                                            driveY * subsys.maximumSpeed,
+                                                            new Rotation2d(radians)));
+        }
+        
     }
 }

@@ -151,6 +151,14 @@ public class ArmSubsystem extends SubsystemBase {
         // we want (don't stop the loop to change the setpt)
     }
 
+    public Command setAngleToCommand(double angle){
+        return Commands.runOnce(() -> {
+            this.setpoint = angle;
+        });
+        // don't use this.runOnce because it implicitly requires this, which is not what
+        // we want (don't stop the loop to change the setpt)
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run

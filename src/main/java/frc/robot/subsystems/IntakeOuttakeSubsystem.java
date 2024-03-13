@@ -24,8 +24,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private CANSparkBase intakeMotor;
   private CANSparkBase outtakeTopMotor;
   private CANSparkBase outtakeBottomMotor;
-  private SparkPIDController m_pidController;
-  private RelativeEncoder m_encoder;
+  private SparkPIDController top_pidController;
+  private SparkPIDController bottom_pidController;
+  private RelativeEncoder top_encoder;
+  private RelativeEncoder bottom_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
   public DigitalInput limitSwitch = new DigitalInput(9);
 
@@ -50,27 +52,36 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     outtakeTopMotor.setIdleMode(IdleMode.kCoast);
     outtakeBottomMotor.setIdleMode(IdleMode.kCoast);
 
-    outtakeBottomMotor.follow(outtakeTopMotor, true);
+    top_pidController = outtakeTopMotor.getPIDController();
+    bottom_pidController = outtakeBottomMotor.getPIDController();
+
+    top_encoder = outtakeTopMotor.getEncoder();
+    bottom_encoder = outtakeBottomMotor.getEncoder();
+
+    kP = 6e-5; 
+    kI = 0;
+    kD = 0; 
+    kIz = 0; 
+    kFF = 0.000015; 
+    kMaxOutput = 1; 
+    kMinOutput = -1;
+    maxRPM = 5700;
+
+    top_pidController.setP(kP);
+    top_pidController.setI(kI);
+    top_pidController.setD(kD);
+    top_pidController.setIZone(kIz);
+    top_pidController.setFF(kFF);
+    top_pidController.setOutputRange(kMinOutput, kMaxOutput);
+
+    bottom_pidController.setP(kP);
+    bottom_pidController.setI(kI);
+    bottom_pidController.setD(kD);
+    bottom_pidController.setIZone(kIz);
+    bottom_pidController.setFF(kFF);
+    bottom_pidController.setOutputRange(kMinOutput, kMaxOutput);
+
   }
-
-
-
-  // public static Double lastspeed = null;
-  // public boolean intakeIsStalled() {
-  //   double current_speed = Math.abs(intakeMotor.getEncoder().getVelocity());
-  //   if (lastspeed == null){
-  //     lastspeed = current_speed;
-  //     return false;
-  //   }
-  //   if (((current_speed - lastspeed) < Constants.MIN_DELTA_V) && (current_speed < Constants.MIN_V)){
-  //     lastspeed = null;
-  //     return true;
-  //   }
-  //   else{
-  //     lastspeed = current_speed;
-  //     return false;
-  //   }
-  // }
 
   public boolean intakeIsStalled() {
     return !limitSwitch.get();
@@ -78,7 +89,8 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   public void setMotors(double intake, double outtake) {
     intakeMotor.set(intake);
-    outtakeTopMotor.set(outtake);
+    top_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);
+    bottom_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);
   }
 
   public Command startOutake() {

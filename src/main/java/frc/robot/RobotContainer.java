@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DriveWithAngleCommand;
 import frc.robot.commands.DriveFixedDistanceCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NudgeIntake;
@@ -92,15 +94,9 @@ public class RobotContainer {
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> { // Function to return desired rotation speed -- might be vision-based, might be joystick-based
-        double visionInput = visionTopic.get();
-        if (driverXbox.getHID().getLeftTriggerAxis() > 0 && visionInput != 0) {
-          // Use vision if left trigger is pressed and it sees a note
-          return visionInput;
-        } else {
-          return MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08);
-        }
-      }      
+      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08),
+      SmartDashboard.getBoolean("angleControl", false),
+      SmartDashboard.getNumber("robotYaw", -driverXbox.getRightX()) 
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
@@ -165,7 +161,7 @@ public class RobotContainer {
       arm.setAngleCommand(ArmStates.STOW)
     ));
     // Left trigger to move to shooting position
-    driverXbox.b().onTrue(new ParallelCommandGroup(arm.setAngleCommand(ArmStates.SHOOT), new SpinUpCommand(intake)));
+    driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm), new SpinUpCommand(intake)));
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
