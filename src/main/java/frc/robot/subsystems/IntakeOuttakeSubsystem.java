@@ -87,6 +87,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     return !limitSwitch.get();
   }
 
+  public double getShooterRPM(double requestedSpeed) {
+    return 1000.0; // we need to test what the note speed is for a givin rpm
+  }
+
   public void setMotors(double intake, double outtake) {
     intakeMotor.set(intake);
     top_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);

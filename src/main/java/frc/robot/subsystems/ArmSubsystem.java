@@ -131,7 +131,7 @@ public class ArmSubsystem extends SubsystemBase {
         });
     }
 
-    private void setAngle(Double angle) {
+    public void setAngle(Double angle) {
         this.setpoint = angle;
     }
 
@@ -146,14 +146,6 @@ public class ArmSubsystem extends SubsystemBase {
     public Command setAngleCommand(ArmStates state){
         return Commands.runOnce(() -> {
             this.setpoint = ANGLES.get(state);
-        });
-        // don't use this.runOnce because it implicitly requires this, which is not what
-        // we want (don't stop the loop to change the setpt)
-    }
-
-    public Command setAngleToCommand(double angle){
-        return Commands.runOnce(() -> {
-            this.setpoint = angle;
         });
         // don't use this.runOnce because it implicitly requires this, which is not what
         // we want (don't stop the loop to change the setpt)

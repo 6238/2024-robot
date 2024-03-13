@@ -161,7 +161,7 @@ public class RobotContainer {
       arm.setAngleCommand(ArmStates.STOW)
     ));
     // Left trigger to move to shooting position
-    driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, swerveSubsystem), new SpinUpCommand(intake)));
+    driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, swerveSubsystem, intake)));
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake

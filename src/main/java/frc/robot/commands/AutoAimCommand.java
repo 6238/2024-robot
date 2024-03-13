@@ -21,17 +21,19 @@ public class AutoAimCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ArmSubsystem arm;
   private final SwerveSubsystem swerve;
+  private final IntakeOuttakeSubsystem shooter;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutoAimCommand(ArmSubsystem subsystem, SwerveSubsystem swerveSubsystem) {
+  public AutoAimCommand(ArmSubsystem subsystem, SwerveSubsystem swerveSubsystem, IntakeOuttakeSubsystem shooterSubsystem) {
     arm = subsystem;
     swerve = swerveSubsystem;
+    shooter = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(subsystem, swerveSubsystem, shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -78,7 +80,11 @@ public class AutoAimCommand extends Command {
 
     double armAngle = shooterAngle_when_down - shooterPitch;
 
-    arm.setAngleToCommand(armAngle);
+    arm.setAngle(armAngle);
+
+    double shooterSpeed = Math.sqrt(Math.pow(shooterVx, 2) + Math.pow(shooterVy, 2) + Math.pow(shooterVz, 2));
+
+    shooter.setMotors(0.0, shooter.getShooterRPM(shooterSpeed));
   }
 
   // Called once the command ends or is interrupted.
