@@ -1,9 +1,11 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
@@ -15,16 +17,19 @@ public class DriveCommand extends Command {
 
     private final DoubleSupplier vX, vY;
     private final DoubleSupplier rotationSpeed;
-    public double radians;
-    public boolean angleControl;
+    private final DoubleSupplier radians;
+    private final BooleanSupplier angleControl;
 
-    public DriveCommand(SwerveSubsystem subsys, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier rotationSpeed, boolean angleControl, double radians) {
+    public DriveCommand(SwerveSubsystem subsys, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier rotationSpeed, BooleanSupplier angleControl, DoubleSupplier radians) {
         this.subsys = subsys;
 
         this.vX = vX;
         this.vY = vY;
 
         this.rotationSpeed = rotationSpeed;
+
+        this.angleControl = angleControl;
+        this.radians = radians;
 
         addRequirements(this.subsys);
     }
@@ -34,17 +39,12 @@ public class DriveCommand extends Command {
         // Read from joysticks
         double driveY = Math.pow(vY.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
         double driveX = Math.pow(vX.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
-        double rotation = rotationSpeed.getAsDouble();
+        double rotation = angleControl.getAsBoolean() == false ? rotationSpeed.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY : subsys.headingCalculate(radians.getAsDouble());
 
-        if (angleControl == false) {
-            Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
-            subsys.drive(translation, rotation * Constants.MAX_ANGULAR_VELOCITY, true);
-        }
-        else {
-            subsys.driveFieldOriented(subsys.getTargetSpeeds(driveX * subsys.maximumSpeed,
-                                                            driveY * subsys.maximumSpeed,
-                                                            new Rotation2d(radians)));
-        }
-        
+        SmartDashboard.putNumber("rotationSetPoint", rotation);
+        SmartDashboard.putNumber("inputAngle", radians.getAsDouble());
+
+        Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
+        subsys.drive(translation, rotation, true);   
     }
 }

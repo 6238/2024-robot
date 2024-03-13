@@ -94,9 +94,9 @@ public class RobotContainer {
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08),
-      SmartDashboard.getBoolean("angleControl", false),
-      SmartDashboard.getNumber("robotYaw", -driverXbox.getRightX()) 
+      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(2), 0.08),
+      () -> SmartDashboard.getBoolean("angleControl", false),
+      () -> SmartDashboard.getNumber("radians", 0)
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
@@ -155,13 +155,13 @@ public class RobotContainer {
         new WaitCommand(0.5), // Wait half a second
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
         ); 
-    // B to shoot
+    // B to shootw
     driverXbox.rightTrigger().onTrue(new SequentialCommandGroup(
       new ShootCommand(intake),
       arm.setAngleCommand(ArmStates.STOW)
     ));
     // Left trigger to move to shooting position
-    driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, swerveSubsystem, intake)));
+    driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, intake, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY())));
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
