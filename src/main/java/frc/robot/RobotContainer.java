@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.File;
@@ -178,6 +179,9 @@ public class RobotContainer {
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
     driverXbox.rightBumper().onTrue(intake.stopCommand());
+
+    // Reset pose-estimation when starting auton
+    RobotModeTriggers.autonomous().onTrue(new InstantCommand(() -> {swerveSubsystem.resetGyroTo(swerveSubsystem.getPose().getRotation());}));
   }
 
   /**

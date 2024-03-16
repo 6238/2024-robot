@@ -11,6 +11,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -26,6 +27,7 @@ import org.photonvision.EstimatedRobotPose;
 
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
+import swervelib.imu.NavXSwerve;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -405,5 +407,11 @@ public class SwerveSubsystem extends SubsystemBase
 
   public void addVisionPose(EstimatedRobotPose pose) {
     swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+  }
+
+  public void resetGyroTo(Rotation2d rot) {
+    // if our gyro isn't a navx, this will throw a ClassCastException
+    NavXSwerve imu = (NavXSwerve) swerveDrive.getGyro();
+    imu.setOffset(new Rotation3d(0, 0, rot.getRadians()));
   }
 }
