@@ -32,6 +32,8 @@ public class DriveCommand extends Command {
         this.radians = radians;
 
         addRequirements(this.subsys);
+
+        SmartDashboard.putNumber("aiming_velocity_multiplier", 2);
     }
 
     @Override
@@ -39,10 +41,9 @@ public class DriveCommand extends Command {
         // Read from joysticks
         double driveY = Math.pow(vY.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
         double driveX = Math.pow(vX.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
-        double rotation = angleControl.getAsBoolean() == false ? rotationSpeed.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY : subsys.headingCalculate(radians.getAsDouble());
-
-        SmartDashboard.putNumber("rotationSetPoint", rotation);
-        SmartDashboard.putNumber("inputAngle", radians.getAsDouble());
+        double multiplier = SmartDashboard.getNumber("aiming_velocity_multiplier", 1);
+        double rotation = angleControl.getAsBoolean() == false ? rotationSpeed.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY : multiplier * subsys.headingCalculate(radians.getAsDouble());
+        System.err.println(rotation);
 
         Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
         subsys.drive(translation, rotation, true);   

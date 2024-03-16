@@ -52,7 +52,7 @@ import static edu.wpi.first.units.Units.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.PHOTONCAMERA_NAME, swerveSubsystem);
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   DoubleSubscriber visionTopic = inst.getDoubleTopic("/vision/right_joystick").subscribe(0.0);
@@ -94,9 +94,9 @@ public class RobotContainer {
       swerveSubsystem,
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
-      () -> MathUtil.applyDeadband(-driverXbox.getRawAxis(2), 0.08),
+      () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08),
       () -> SmartDashboard.getBoolean("angleControl", false),
-      () -> SmartDashboard.getNumber("radians", 0)
+      () -> SmartDashboard.getNumber("headingSetpoint", 0)
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());

@@ -159,22 +159,16 @@ public class ArmSubsystem extends SubsystemBase {
         this.kP = SmartDashboard.getNumber("kP", kP);
         this.kI = SmartDashboard.getNumber("kI", kI);
         this.kD = SmartDashboard.getNumber("kD", kD);
-        SmartDashboard.putNumber("setpoint", setpoint);
-
-        // this.setpoint = SmartDashboard.getNumber("setpoint", setpoint);
+        SmartDashboard.putNumber("armSetpoint", this.setpoint);
 
         // Update our PID controller
         configs.Slot0.kP = this.kP;
         configs.Slot0.kI = this.kI;
         configs.Slot0.kD = this.kD;
-        // motor1.getConfigurator().apply(configs);
-        //motor1.getConfigurator().apply(configs.Slot0);
 
         SmartDashboard.putNumberArray("motor current draw", new double[] { motor1.getTorqueCurrent().getValue(),
                 motor2.getTorqueCurrent().getValue(), motor3.getTorqueCurrent().getValue() });
 
-        SmartDashboard.putNumber("sensor value in turns", sensorTalon.getSelectedSensorPosition() * (1.0 / 4096.0));
-        SmartDashboard.putNumber("raw sensor value", sensorTalon.getSelectedSensorPosition());
         SmartDashboard.putNumber("falcon position", motor1.getPosition().getValue());
     }
 

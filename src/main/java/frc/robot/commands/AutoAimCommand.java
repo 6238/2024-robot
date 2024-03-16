@@ -39,6 +39,7 @@ public class AutoAimCommand extends Command {
     this.poseY = poseY;
 
     SmartDashboard.putBoolean("angleControl", false);
+    SmartDashboard.putNumber("noteVelocity", 10.0);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem, shooterSubsystem);
@@ -52,15 +53,13 @@ public class AutoAimCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double shooterAngle_when_down = Math.toRadians(67.94);
+    double shooterAngle_when_down = 67.94;
 
     double g = 9.81;
-    double shooter_hight = 0.0;
-    double noteVelocity = 15; // this is just a placeholder for testing, we need to actualy test what speed our shooter shoots and determine the best value experimentaly.
+    double shooter_hight = 0.5; // Note sure if this is actualy constant, but I'm just going to assume so.
+    double noteVelocity = SmartDashboard.getNumber("noteVelocity", 10.0); // this is just a placeholder for testing, we need to actualy test what speed our shooter shoots and determine the best value experimentaly.
     double x = poseX.getAsDouble();
     double y = poseY.getAsDouble();
-    SmartDashboard.putNumber("poseX", x);
-    SmartDashboard.putNumber("poseY", y);
     double speakerX = 0.0; // currently just the blue speaker
     double speakerY = 5.547868;
     double speakerZ = 1.451102;
@@ -81,11 +80,12 @@ public class AutoAimCommand extends Command {
     double shooterVy = vy - robotVy;
     double shooterVz = Math.sqrt(Math.pow(noteVelocity, 2) - Math.pow(horizontalSpeed, 2));
 
-    double shooterPitch = Math.atan(shooterVz / Math.sqrt(Math.pow(shooterVx, 2) + Math.pow(shooterVy, 2)));
+    double shooterPitch = Math.toDegrees(Math.atan(shooterVz / Math.sqrt(Math.pow(shooterVx, 2) + Math.pow(shooterVy, 2))));
     double robotYaw =  shooterVy <= 0 ? -Math.atan(shooterVx / shooterVy) + (Math.PI / 2) :  -Math.atan(shooterVx / shooterVy) + (3 * Math.PI / 2);
 
-    SmartDashboard.putNumber("radians", robotYaw);
-    SmartDashboard.putNumber("degrees", 180 / Math.PI * robotYaw);
+    SmartDashboard.putNumber("headingSetpoint", robotYaw);
+    SmartDashboard.putNumber("headingSetpointDegrees", Math.toDegrees(robotYaw));
+    SmartDashboard.putNumber("shooterPitch", shooterPitch);
     
     SmartDashboard.putBoolean("angleControl", true);
 

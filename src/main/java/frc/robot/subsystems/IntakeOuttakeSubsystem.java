@@ -117,7 +117,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("current", intakeMotor.getOutputCurrent());
+    SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
   }
 
   @Override
