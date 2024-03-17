@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.revrobotics.*;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -29,10 +27,8 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private CANSparkBase intakeMotor;
   private CANSparkBase outtakeTopMotor;
   private CANSparkBase outtakeBottomMotor;
-  private SparkPIDController top_pidController;
-  private SparkPIDController bottom_pidController;
-  private RelativeEncoder top_encoder;
-  private RelativeEncoder bottom_encoder;
+  private SparkPIDController m_pidController;
+  private RelativeEncoder m_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
   public DigitalInput limitSwitch = new DigitalInput(9);
 
@@ -57,11 +53,9 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     outtakeTopMotor.setIdleMode(IdleMode.kCoast);
     outtakeBottomMotor.setIdleMode(IdleMode.kCoast);
 
-    top_pidController = outtakeTopMotor.getPIDController();
-    bottom_pidController = outtakeBottomMotor.getPIDController();
+    outtakeBottomMotor.follow(outtakeTopMotor, true);
+  }
 
-    top_encoder = outtakeTopMotor.getEncoder();
-    bottom_encoder = outtakeBottomMotor.getEncoder();
 
     kP = OuttakeGains.kP; 
     kI = OuttakeGains.kI;
@@ -75,45 +69,30 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     kMinOutput = OuttakeGains.kMinOutput;
     maxRPM = OuttakeGains.maxRPM;
 
-    top_pidController.setP(kP);
-    top_pidController.setI(kI);
-    top_pidController.setD(kD);
-    top_pidController.setIZone(kIz);
-    top_pidController.setFF(kFF);
-    top_pidController.setOutputRange(kMinOutput, kMaxOutput);
-
-    bottom_pidController.setP(kP);
-    bottom_pidController.setI(kI);
-    bottom_pidController.setD(kD);
-    bottom_pidController.setIZone(kIz);
-    bottom_pidController.setFF(kFF);
-    bottom_pidController.setOutputRange(kMinOutput, kMaxOutput);
-
-    SmartDashboard.putNumber("shooterRPM", 1000.0);
-  }
+  // public static Double lastspeed = null;
+  // public boolean intakeIsStalled() {
+  //   double current_speed = Math.abs(intakeMotor.getEncoder().getVelocity());
+  //   if (lastspeed == null){
+  //     lastspeed = current_speed;
+  //     return false;
+  //   }
+  //   if (((current_speed - lastspeed) < Constants.MIN_DELTA_V) && (current_speed < Constants.MIN_V)){
+  //     lastspeed = null;
+  //     return true;
+  //   }
+  //   else{
+  //     lastspeed = current_speed;
+  //     return false;
+  //   }
+  // }
 
   public boolean intakeIsStalled() {
     return !limitSwitch.get();
   }
-  
-  public double getShooterRPM(double requestedSpeed) {
-    return SmartDashboard.getNumber("shooterRPM", 1000.0); // we need to test what the note speed is for a givin rpm
-  }
 
   public void setMotors(double intake, double outtake) {
     intakeMotor.set(intake);
-    SmartDashboard.putNumber("shooterSpeedSetpoint", outtake);
-    top_pidController.setReference(-outtake, CANSparkMax.ControlType.kVelocity);
-    bottom_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);
-  }
-
-  public Command setMotors(double intake, DoubleSupplier outtake) {
-    return runOnce(() -> {
-      intakeMotor.set(intake);
-      SmartDashboard.putNumber("shooterSpeedSetpoint", outtake.getAsDouble());
-      top_pidController.setReference(-outtake.getAsDouble(), CANSparkMax.ControlType.kVelocity);
-      bottom_pidController.setReference(outtake.getAsDouble(), CANSparkMax.ControlType.kVelocity);
-    });
+    outtakeTopMotor.set(outtake);
   }
 
   public Command startOutake() {

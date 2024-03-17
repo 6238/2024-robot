@@ -24,8 +24,6 @@ import static edu.wpi.first.units.Units.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.DoubleSupplier;
-
 import static java.util.Map.entry;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,8 +31,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -65,8 +61,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     /** Creates a new ExampleSubsystem. */
     public ArmSubsystem() {
-        
-        double motorToArm = .2155; // motor turns needed for the arm to turn fully
+
+        double motorToArm = .2395; // motor turns needed for the arm to turn fully
 
         configs.Feedback.SensorToMechanismRatio = motorToArm;
 
@@ -117,25 +113,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
-    public double getArmAngle(double dist) {
-        return -4.48176 * Math.pow(dist, 2) + 30.8031 * dist - 16.4205;
-    }
-
     public Command runPIDCommand() {
         return runOnce(() -> {
             motor1.setControl(voltagePosition.withPosition(setpoint));
         });
-    }
-
-    public Command autoSetAngle(DoubleSupplier poseX, DoubleSupplier poseY) {
-        double dist = Math.hypot(poseY.getAsDouble() - 5.547868, poseX.getAsDouble());
-        return runOnce(() -> {
-            motor1.setControl(voltagePosition.withPosition(getArmAngle(dist)));
-        });
-    }
-
-    public void runPID() {
-        motor1.setControl(voltagePosition.withPosition(setpoint));
     }
 
     public Command increaseSetpointCommand() {
@@ -150,7 +131,7 @@ public class ArmSubsystem extends SubsystemBase {
         });
     }
 
-    public void setAngle(Double angle) {
+    private void setAngle(Double angle) {
         this.setpoint = angle;
     }
 
@@ -165,13 +146,6 @@ public class ArmSubsystem extends SubsystemBase {
     public Command setAngleCommand(ArmStates state){
         return Commands.runOnce(() -> {
             this.setpoint = ANGLES.get(state);
-        });
-        // don't use this.runOnce because it implicitly requires this, which is not what
-        // we want (don't stop the loop to change the setpt)
-    }
-    public Command setAngleCommand(DoubleSupplier angle) {
-        return Commands.runOnce(() -> {
-            this.setpoint = angle.getAsDouble();
         });
         // don't use this.runOnce because it implicitly requires this, which is not what
         // we want (don't stop the loop to change the setpt)

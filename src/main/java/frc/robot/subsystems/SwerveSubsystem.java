@@ -251,11 +251,6 @@ public class SwerveSubsystem extends SubsystemBase
     return swerveDrive.getYaw();
   }
 
-  public double headingCalculate(double targetHeadingAngleRadians)
-  {
-    return swerveDrive.swerveController.headingCalculate(getHeading().getRadians(), targetHeadingAngleRadians);
-  }
-
   /**
    * Get the chassis speeds based on controller input of 2 joysticks. One for speeds in which direction. The other for
    * the angle of the robot.

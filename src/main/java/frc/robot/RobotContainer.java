@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.commands.AutoAimCommand;
-import frc.robot.commands.AutoArmCommand;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.DriveWithAngleCommand;
 import frc.robot.commands.DriveFixedDistanceCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NudgeIntake;
@@ -19,7 +16,6 @@ import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmStates;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -55,7 +51,7 @@ import static edu.wpi.first.units.Units.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.PHOTONCAMERA_NAME, swerveSubsystem);
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   DoubleSubscriber visionTopic = inst.getDoubleTopic("/vision/right_joystick").subscribe(0.0);
@@ -68,10 +64,6 @@ public class RobotContainer {
   CommandXboxController driverXbox = new CommandXboxController(0);
 
   private final SendableChooser<Command> autoChooser; 
-
-  public Pose2d getPose() {
-    return swerveSubsystem.getPose();
-  }
 
   // double invertIfRed(double value) {
   //   var alliance = DriverStation.getAlliance();
@@ -90,20 +82,28 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootCommand", new ShootCommand(intake));
     NamedCommands.registerCommand("stopCommand", intake.stopCommand());
 
-    NamedCommands.registerCommand("zeroGyro", new InstantCommand(() ->
-      swerveSubsystem.setGyroOffset())
+    NamedCommands.registerCommand("zeroRight", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 + 60 : 60).in(Radians)))
     );
-
+    NamedCommands.registerCommand("zeroCenter", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 : 0).in(Radians)))
+    );
+    NamedCommands.registerCommand("zeroLeft", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 180 - 60 : -60).in(Radians)))
+    );
+    NamedCommands.registerCommand("reZero", new InstantCommand(() ->
+      swerveSubsystem.setGyroOffset(Degrees.of(swerveSubsystem.getPose().getRotation().getDegrees() - 180).in(Radians)))
+    );
     // Configure the trigger bindings
     configureBindings();
 
    DriveCommand driveCmd = new DriveCommand(
       swerveSubsystem,
-      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
-      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08),
       () -> driverXbox.getHID().getBButton(),
       () -> -Math.atan((swerveSubsystem.getPose().getY() - 5.547868) / swerveSubsystem.getPose().getX())
+      () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
+      () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
@@ -162,17 +162,13 @@ public class RobotContainer {
         new WaitCommand(0.5), // Wait half a second
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0))) // Stop rumbling
         ); 
-    // B to shootw
+    // B to shoot
     driverXbox.rightTrigger().onTrue(new SequentialCommandGroup(
       new ShootCommand(intake),
       arm.setAngleCommand(ArmStates.STOW)
     ));
     // Left trigger to move to shooting position
-    // driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, intake, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY())));
-    // SmartDashboard.putNumber("armSetpointTest", 75.0);
-    // driverXbox.b().onTrue(new ParallelCommandGroup(intake.setMotors(0, () -> SmartDashboard.getNumber("shooterRPM", 1000)), arm.setAngleCommand(() -> SmartDashboard.getNumber("armSetpointTest", 75.0))));
-    driverXbox.b().onTrue(new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()));
-
+    driverXbox.b().onTrue(new ParallelCommandGroup(arm.setAngleCommand(ArmStates.SHOOT), new SpinUpCommand(intake)));
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
