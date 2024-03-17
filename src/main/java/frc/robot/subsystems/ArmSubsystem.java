@@ -59,7 +59,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
-        entry(ArmStates.INTAKE, -3.0),
+        entry(ArmStates.INTAKE, -7.0),
         entry(ArmStates.SHOOT, 17.0),
         entry(ArmStates.STOW, 75.0));
 

@@ -20,11 +20,14 @@ import static edu.wpi.first.units.Units.*;
 
 public class VisionSubsystem extends SubsystemBase {
     private AprilTagFieldLayout layout;
-    private PhotonCamera cam; 
-    private final Transform3d robotToCam = new Transform3d(new Translation3d(Inches.of(-11.25), Inches.of(-5.0), Inches.of(10)), new Rotation3d(Degrees.of(0).in(Radians), Degrees.of(-30).in(Radians), Degrees.of(180).in(Radians)));
+    private PhotonCamera cam;
+    private final Transform3d robotToCam = new Transform3d(
+            new Translation3d(Inches.of(-11.25), Inches.of(-4.75), Inches.of(8.5)),
+            new Rotation3d(Degrees.of(0).in(Radians), Degrees.of(-53).in(Radians), Degrees.of(180).in(Radians)));
     private PhotonPoseEstimator poseEst;
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
+
     /** Create a new subsystem */
     public VisionSubsystem(String camName, SwerveSubsystem swerve) {
         System.out.println("Hello from VisionSubsystem! Initializing using " + camName);
@@ -47,7 +50,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
             if (pose.isPresent()) {
-                // swerve.addVisionPose(pose.get());
+                swerve.addVisionPose(pose.get());
                 field.setRobotPose(pose.get().estimatedPose.toPose2d());
                 SmartDashboard.putData("VisionField", field);
             }

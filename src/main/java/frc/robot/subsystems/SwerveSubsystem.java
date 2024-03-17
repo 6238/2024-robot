@@ -228,7 +228,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void setGyroOffset() {
     // swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(radians)));
     // swerveDrive.zeroGyro();
-    swerveDrive.setImuOffset(swerveDrive.getPose().getRotation());
+    // swerveDrive.setImuOffset(swerveDrive.getPose().getRotation());
   }
 
   /**

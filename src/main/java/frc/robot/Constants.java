@@ -41,4 +41,15 @@ public final class Constants {
   public static final double NUDGE_SPEED = 0.4;
 
   public static final int ARM_ENCODER_ZERO = 1870;
+
+  public static class OuttakeGains {
+    public static final double kP = 1e-5;
+    public static final double kI = 1e-7;
+    public static final double kD = 1e-4;
+    public static final double kIz = 0; 
+    public static final double kFF = 0.000015; 
+    public static final double kMaxOutput = 1; 
+    public static final double kMinOutput = -1;
+    public static final double maxRPM = 5700.0;
+  }
 }
