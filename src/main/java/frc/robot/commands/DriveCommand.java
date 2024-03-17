@@ -43,7 +43,6 @@ public class DriveCommand extends Command {
         double driveX = Math.pow(vX.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
         double multiplier = SmartDashboard.getNumber("aiming_velocity_multiplier", 1);
         double rotation = angleControl.getAsBoolean() == false ? rotationSpeed.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY : multiplier * subsys.headingCalculate(radians.getAsDouble());
-        System.err.println(rotation);
 
         Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
         subsys.drive(translation, rotation, true);   

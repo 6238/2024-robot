@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.*;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -58,9 +60,12 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     top_encoder = outtakeTopMotor.getEncoder();
     bottom_encoder = outtakeBottomMotor.getEncoder();
 
-    kP = 6e-5; 
-    kI = 0;
-    kD = 0; 
+    kP = 1e-5; 
+    kI = 1e-7;
+    kD = 1e-4;
+    SmartDashboard.putNumber("shooterKp", kP);
+    SmartDashboard.putNumber("shooterKi", kI);
+    SmartDashboard.putNumber("shooterKd", kD);
     kIz = 0; 
     kFF = 0.000015; 
     kMaxOutput = 1; 
@@ -81,20 +86,31 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     bottom_pidController.setFF(kFF);
     bottom_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
+    SmartDashboard.putNumber("shooterRPM", 1000.0);
   }
 
   public boolean intakeIsStalled() {
     return !limitSwitch.get();
   }
-
+  
   public double getShooterRPM(double requestedSpeed) {
-    return 1000.0; // we need to test what the note speed is for a givin rpm
+    return SmartDashboard.getNumber("shooterRPM", 1000.0); // we need to test what the note speed is for a givin rpm
   }
 
   public void setMotors(double intake, double outtake) {
     intakeMotor.set(intake);
-    top_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);
+    SmartDashboard.putNumber("shooterSpeedSetpoint", outtake);
+    top_pidController.setReference(-outtake, CANSparkMax.ControlType.kVelocity);
     bottom_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public Command setMotors(double intake, DoubleSupplier outtake) {
+    return runOnce(() -> {
+      intakeMotor.set(intake);
+      SmartDashboard.putNumber("shooterSpeedSetpoint", outtake.getAsDouble());
+      top_pidController.setReference(-outtake.getAsDouble(), CANSparkMax.ControlType.kVelocity);
+      bottom_pidController.setReference(outtake.getAsDouble(), CANSparkMax.ControlType.kVelocity);
+    });
   }
 
   public Command startOutake() {
@@ -118,6 +134,16 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
+    SmartDashboard.putNumber("shooterSpeed", top_encoder.getVelocity());
+    kP = SmartDashboard.getNumber("shooterKp", 0);
+    kI = SmartDashboard.getNumber("shooterKi", 0);
+    kD = SmartDashboard.getNumber("shooterKd", 0);
+    top_pidController.setP(kP);
+    top_pidController.setI(kI);
+    top_pidController.setD(kD);
+    bottom_pidController.setP(kP);
+    bottom_pidController.setI(kI);
+    bottom_pidController.setD(kD);
   }
 
   @Override

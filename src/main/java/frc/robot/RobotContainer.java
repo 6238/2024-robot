@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.AutoArmCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveWithAngleCommand;
 import frc.robot.commands.DriveFixedDistanceCommand;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmStates;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -66,6 +68,10 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser; 
 
+  public Pose2d getPose() {
+    return swerveSubsystem.getPose();
+  }
+
   // double invertIfRed(double value) {
   //   var alliance = DriverStation.getAlliance();
   //   var isRed = alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
@@ -95,8 +101,8 @@ public class RobotContainer {
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), 0.02), // Y axis on joystick is X axis for FRC. Forward is postive-Y, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08),
-      () -> SmartDashboard.getBoolean("angleControl", false),
-      () -> SmartDashboard.getNumber("headingSetpoint", 0)
+      () -> driverXbox.getHID().getBButton(),
+      () -> -Math.atan((swerveSubsystem.getPose().getY() - 5.547868) / swerveSubsystem.getPose().getX())
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
@@ -161,7 +167,11 @@ public class RobotContainer {
       arm.setAngleCommand(ArmStates.STOW)
     ));
     // Left trigger to move to shooting position
-    driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, intake, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY())));
+    // driverXbox.b().onTrue(new ParallelCommandGroup(new AutoAimCommand(arm, intake, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY())));
+    // SmartDashboard.putNumber("armSetpointTest", 75.0);
+    // driverXbox.b().onTrue(new ParallelCommandGroup(intake.setMotors(0, () -> SmartDashboard.getNumber("shooterRPM", 1000)), arm.setAngleCommand(() -> SmartDashboard.getNumber("armSetpointTest", 75.0))));
+    driverXbox.b().onTrue(new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()));
+
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
