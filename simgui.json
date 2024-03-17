@@ -32,9 +32,6 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "transitory": {
       "PathPlanner": {
         "open": true
@@ -50,6 +47,9 @@
           }
         },
         "Field": {
+          "double[]##v_/SmartDashboard/Field/Robot": {
+            "open": true
+          },
           "open": true
         },
         "open": true,
@@ -60,9 +60,12 @@
     }
   },
   "NetworkTables Info": {
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "open": true
+    },
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }

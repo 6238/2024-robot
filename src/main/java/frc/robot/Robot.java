@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -21,6 +22,12 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  public Pose2d robotPose;
+
+  public Pose2d getPose() {
+    return m_robotContainer.swerveSubsystem.getPose();
+  }
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -30,7 +37,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
   }

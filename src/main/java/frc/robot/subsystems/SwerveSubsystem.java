@@ -225,8 +225,10 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.zeroGyro();
   }
 
-  public void setGyroOffset(double radians) {
-    swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(radians)));
+  public void setGyroOffset() {
+    // swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(radians)));
+    // swerveDrive.zeroGyro();
+    swerveDrive.setImuOffset(swerveDrive.getPose().getRotation());
   }
 
   /**
@@ -247,6 +249,11 @@ public class SwerveSubsystem extends SubsystemBase
   public Rotation2d getHeading()
   {
     return swerveDrive.getYaw();
+  }
+
+  public double headingCalculate(double targetHeadingAngleRadians)
+  {
+    return swerveDrive.swerveController.headingCalculate(getHeading().getRadians(), targetHeadingAngleRadians);
   }
 
   /**

@@ -25,7 +25,6 @@ public class VisionSubsystem extends SubsystemBase {
     private PhotonPoseEstimator poseEst;
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
-
     /** Create a new subsystem */
     public VisionSubsystem(String camName, SwerveSubsystem swerve) {
         System.out.println("Hello from VisionSubsystem! Initializing using " + camName);
