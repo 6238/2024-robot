@@ -52,10 +52,7 @@
           },
           "open": true
         },
-        "open": true,
-        "swerve": {
-          "open": true
-        }
+        "open": true
       }
     }
   },
@@ -65,7 +62,6 @@
         "open": true
       },
       "open": true
-    },
-    "visible": true
+    }
   }
 }

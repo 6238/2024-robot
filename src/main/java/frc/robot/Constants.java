@@ -43,7 +43,7 @@ public final class Constants {
   public static final int ARM_ENCODER_ZERO = 1870;
 
   public static class OuttakeGains {
-    public static final double kP = 1e-5;
+    public static final double kP = 1e-7;
     public static final double kI = 1e-7;
     public static final double kD = 1e-4;
     public static final double kIz = 0; 

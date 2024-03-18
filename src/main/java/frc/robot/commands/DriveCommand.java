@@ -38,6 +38,8 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
+        SmartDashboard.putNumber("yawSetpoint", radians.getAsDouble());
+        SmartDashboard.putBoolean("angleControl", angleControl.getAsBoolean());
         // Read from joysticks
         double driveY = Math.pow(vY.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;
         double driveX = Math.pow(vX.getAsDouble(), 1) * OperatorConstants.JOYSTICK_SCALE;

@@ -96,6 +96,10 @@ public class ArmSubsystem extends SubsystemBase {
         motor2.setNeutralMode(NeutralModeValue.Brake);
         motor3.setControl(new Follower(motor1.getDeviceID(), false));
         motor3.setNeutralMode(NeutralModeValue.Brake);
+        
+        SmartDashboard.putNumber("regressionA", -2.34149);
+        SmartDashboard.putNumber("regressionB", 20.0303);
+        SmartDashboard.putNumber("regressionC", 4.88624);
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -118,7 +122,17 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getArmAngle(double dist) {
-        return -4.48176 * Math.pow(dist, 2) + 30.8031 * dist - 16.4205;
+        double a = SmartDashboard.getNumber("regressionA", -2.34149);
+        double b = SmartDashboard.getNumber("regressionB", 20.0303);
+        double c = SmartDashboard.getNumber("regressionC", 4.88624);
+        double angle = a * Math.pow(dist, 2) + b * dist + c;
+        if (angle > 0 && angle < 90) {
+            setpoint = angle;
+            return angle;
+        }
+        else {
+            return 75;
+        }
     }
 
     public Command runPIDCommand() {
@@ -127,11 +141,10 @@ public class ArmSubsystem extends SubsystemBase {
         });
     }
 
-    public Command autoSetAngle(DoubleSupplier poseX, DoubleSupplier poseY) {
+    public void autoSetAngle(DoubleSupplier poseX, DoubleSupplier poseY) {
         double dist = Math.hypot(poseY.getAsDouble() - 5.547868, poseX.getAsDouble());
-        return runOnce(() -> {
-            motor1.setControl(voltagePosition.withPosition(getArmAngle(dist)));
-        });
+        SmartDashboard.putNumber("distFromSpeaker", dist);
+        motor1.setControl(voltagePosition.withPosition(getArmAngle(dist)));
     }
 
     public void runPID() {
