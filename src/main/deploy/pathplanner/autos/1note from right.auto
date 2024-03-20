@@ -36,20 +36,20 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "New Path"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "setAngleStow"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "New Folder",
   "choreoAuto": false
 }

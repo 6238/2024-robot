@@ -65,7 +65,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
+  "folder": "first comp",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

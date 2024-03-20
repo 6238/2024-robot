@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -40,6 +42,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -72,6 +75,12 @@ public class RobotContainer {
   public Pose2d getPose() {
     return swerveSubsystem.getPose();
   }
+  public double angleToSpeaker() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    double speakerX = (ally.get() == Alliance.Blue) ? 0.0 : 16.579342;
+    Pose2d pose = swerveSubsystem.getPose();
+    return Math.atan((pose.getY() - 5.547868) / (pose.getX() - speakerX));
+  }
 
   // double invertIfRed(double value) {
   //   var alliance = DriverStation.getAlliance();
@@ -82,17 +91,21 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    NamedCommands.registerCommand("setAngleIntake", arm.setAngleCommand(ArmStates.INTAKE));
-    NamedCommands.registerCommand("setAngleShoot", arm.setAngleCommand(ArmStates.SHOOT));
-    NamedCommands.registerCommand("setAngleStow", arm.setAngleCommand(ArmStates.STOW));
-    NamedCommands.registerCommand("IntakeCommand", new IntakeCommand(intake));
-    NamedCommands.registerCommand("SpinUpCommand", intake.startOutake());
-    NamedCommands.registerCommand("ShootCommand", new ShootCommand(intake));
-    NamedCommands.registerCommand("stopCommand", intake.stopCommand());
-
-    NamedCommands.registerCommand("zeroGyro", new InstantCommand(() ->
-      swerveSubsystem.setGyroOffset())
-    );
+    NamedCommands.registerCommand("intake", new ParallelCommandGroup(
+      arm.setAngleCommand(ArmStates.INTAKE),
+      new IntakeCommand(intake, true)));
+    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
+      new ParallelDeadlineGroup(
+        new WaitCommand(2),
+        new InstantCommand(() -> intake.setMotors(0, 4500)),
+        new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
+        new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
+      ),
+      new InstantCommand(() -> intake.setMotors(100, 4500))
+    ));
+    NamedCommands.registerCommand("stow", arm.setAngleCommand(ArmStates.STOW));
+    NamedCommands.registerCommand("stopCommand", new InstantCommand(() -> intake.setMotors(0, 0)));
+    NamedCommands.registerCommand("zeroGyro", new InstantCommand(() -> swerveSubsystem.setGyroOffset()));
 
     // Configure the trigger bindings
     configureBindings();
@@ -103,7 +116,7 @@ public class RobotContainer {
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), 0.02), // X axis on joystick is Y axis for FRC. Left is positive-X, so need to invert sign
       () -> MathUtil.applyDeadband(-driverXbox.getRightX(), 0.08),
       () -> driverXbox.getHID().getBButton(),
-      () -> Math.atan((swerveSubsystem.getPose().getY() - 5.547868) / (swerveSubsystem.getPose().getX()))
+      () -> angleToSpeaker()
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
@@ -126,7 +139,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
-    driverXbox.y().onTrue(arm.setAngleCommand(100.0));
+    driverXbox.y().onTrue(arm.setAngleCommand(120.0));
     driverXbox.a().onTrue(arm.setAngleCommand(ArmStates.STOW));
     driverXbox.x().whileTrue(intake.ejectCommand());
     driverXbox.x().onFalse(intake.stopCommand());
@@ -156,7 +169,7 @@ public class RobotContainer {
 
     // Right trigger to intake - lower arm, spin
     driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
-        new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake, false)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
         arm.setAngleCommand(ArmStates.STOW),
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
         new WaitCommand(0.5), // Wait half a second
@@ -174,6 +187,8 @@ public class RobotContainer {
     // SmartDashboard.putNumber("armSetpointTest", 75.0);
     // driverXbox.b().onTrue(new ParallelCommandGroup(intake.setMotors(0, () -> SmartDashboard.getNumber("shooterRPM", 1000)), arm.setAngleCommand(() -> SmartDashboard.getNumber("armSetpointTest", 75.0))));
     driverXbox.b().whileTrue(new SequentialCommandGroup(intake.startOutake(), new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY())));
+    // SmartDashboard.putNumber("setpoint2", 75);
+    // driverXbox.b().whileTrue(new ParallelCommandGroup(intake.startOutake(), arm.setAngleCommand(() -> SmartDashboard.getNumber("setpoint2", 30))));
 
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));

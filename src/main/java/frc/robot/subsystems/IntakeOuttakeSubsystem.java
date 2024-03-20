@@ -118,7 +118,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   public Command startOutake() {
     return runOnce(() -> {
-      this.setMotors(0, 4000.0);
+      this.setMotors(0, 4500.0);
     });
   }
 

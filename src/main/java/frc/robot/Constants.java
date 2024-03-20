@@ -27,12 +27,12 @@ public final class Constants {
 
   public static class IDs {
     public static final int INTAKE_MOTOR = 2;
-    public static final int OUTTAKE_TOP_MOTOR = 4;
-    public static final int OUTTAKE_BOTTOM_MOTOR = 3;
+    public static final int OUTTAKE_TOP_MOTOR = 3;
+    public static final int OUTTAKE_BOTTOM_MOTOR = 4;
   }
 
   public static class Speeds {
-    public static final double INTAKE_SPEED = -0.65;
+    public static final double INTAKE_SPEED = -0.55;
     public static final double OUTTAKE_SPEED = -1000; 
   }
   public static final double MIN_DELTA_V = 0;
@@ -40,7 +40,7 @@ public final class Constants {
   public static final double SHOOT_DELAY = 1;
   public static final double NUDGE_SPEED = 0.4;
 
-  public static final int ARM_ENCODER_ZERO = 1870;
+  public static final int ARM_ENCODER_ZERO = -917;
 
   public static class OuttakeGains {
     public static final double kP = 1e-7;
