@@ -5,25 +5,15 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.*;
-import static edu.wpi.first.units.Units.*;
-
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
@@ -36,8 +26,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -116,12 +104,15 @@ public class ArmSubsystem extends SubsystemBase {
             System.out.println("Could not apply configs, error code: " + status.toString());
         }
 
-        // Set wherever we are on init to 0
+        // Figure out our starting position in degrees, and set the Falcon's onboard encoders to correspond
         sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-        setpoint = 360 * ((sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) / 4096);
-        SmartDashboard.putNumber("setpoint", setpoint);
-        motor1.setPosition(setpoint);
+        sensorTalon.configFeedbackNotContinuous(true, 0);
+        double startingPosition = (sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) * 360 / 4096;
+        motor1.setPosition(startingPosition);
 
+        // Set the arm setpoint to be the same as the starting position so that the arm doesn't move until we explicitly tell it to go somewhere else
+        setpoint = startingPosition;
+        SmartDashboard.putNumber("setpoint", setpoint);
     }
 
     public double getArmAngle(double dist) {
