@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6,
-      "y": 4.45
+      "x": 1.3073694069513322,
+      "y": 5.556194100015565
     },
-    "rotation": -60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,60 +14,72 @@
         {
           "type": "named",
           "data": {
-            "name": "zeroRight"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setAngleShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpinUpCommand"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootCommand"
+            "name": "intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "note3 from right"
+            "pathName": "start at note1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootCommand"
+            "name": "shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setAngleStow"
+            "name": "intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "note1 to note2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "note2 to note3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stow"
           }
         }
       ]
     }
   },
-  "folder": "New Folder",
+  "folder": null,
   "choreoAuto": false
 }

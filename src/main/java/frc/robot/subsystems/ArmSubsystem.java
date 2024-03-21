@@ -25,11 +25,13 @@ import static edu.wpi.first.units.Units.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import static java.util.Map.entry;
 
-
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -63,8 +65,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
-        entry(ArmStates.INTAKE, -7.0),
-        entry(ArmStates.SHOOT, 17.0),
+        entry(ArmStates.INTAKE, 17.0),
+        entry(ArmStates.SHOOT, 24.0),
         entry(ArmStates.STOW, 75.0));
 
     /** Creates a new ExampleSubsystem. */
@@ -101,9 +103,9 @@ public class ArmSubsystem extends SubsystemBase {
         motor3.setControl(new Follower(motor1.getDeviceID(), false));
         motor3.setNeutralMode(NeutralModeValue.Brake);
         
-        SmartDashboard.putNumber("regressionA", -2.34149);
-        SmartDashboard.putNumber("regressionB", 20.0303);
-        SmartDashboard.putNumber("regressionC", 4.88624);
+        SmartDashboard.putNumber("regressionA", -6.58156);
+        SmartDashboard.putNumber("regressionB", 41.555);
+        SmartDashboard.putNumber("regressionC", -1.55917);
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -132,7 +134,7 @@ public class ArmSubsystem extends SubsystemBase {
         double b = SmartDashboard.getNumber("regressionB", 20.0303);
         double c = SmartDashboard.getNumber("regressionC", 4.88624);
         double angle = a * Math.pow(dist, 2) + b * dist + c;
-        if (angle > 0 && angle < 90) {
+        if (angle > 19 && angle < 110) {
             setpoint = angle;
             return angle;
         }
@@ -148,7 +150,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void autoSetAngle(DoubleSupplier poseX, DoubleSupplier poseY) {
-        double dist = Math.hypot(poseY.getAsDouble() - 5.547868, poseX.getAsDouble());
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        double speakerX = (ally.get() == Alliance.Blue) ? 0.0 : 16.579342;
+        double dist = Math.hypot(poseY.getAsDouble() - 5.547868, poseX.getAsDouble() - speakerX);
         SmartDashboard.putNumber("distFromSpeaker", dist);
         motor1.setControl(voltagePosition.withPosition(getArmAngle(dist)));
     }

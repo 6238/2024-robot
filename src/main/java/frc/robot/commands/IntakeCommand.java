@@ -16,14 +16,16 @@ import frc.robot.Constants;
 public class IntakeCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final IntakeOuttakeSubsystem m_subsystem;
+  private boolean spinup;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeCommand(IntakeOuttakeSubsystem subsystem) {
+  public IntakeCommand(IntakeOuttakeSubsystem subsystem, boolean spinupBool) {
     m_subsystem = subsystem;
+    spinup = spinupBool;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -31,7 +33,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, 0);
+    m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? 4500.0 : 0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
