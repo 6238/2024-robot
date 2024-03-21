@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -27,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.function.DoubleSupplier;
 
 import static java.util.Map.entry;
+
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,6 +58,8 @@ public class ArmSubsystem extends SubsystemBase {
     private final TalonFX motor3 = new TalonFX(13);
 
     private final TalonSRX sensorTalon = new TalonSRX(14);
+
+    Orchestra orch = new Orchestra();
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
@@ -118,6 +122,8 @@ public class ArmSubsystem extends SubsystemBase {
         setpoint = 360 * ((sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) / 4096);
         SmartDashboard.putNumber("setpoint", setpoint);
         motor1.setPosition(setpoint);
+
+        orch.addInstrument(motor1);
 
     }
 
@@ -188,6 +194,19 @@ public class ArmSubsystem extends SubsystemBase {
         });
         // don't use this.runOnce because it implicitly requires this, which is not what
         // we want (don't stop the loop to change the setpt)
+    }
+
+    public Command setBrakeCommand(boolean brake) {
+        return Commands.runOnce(() -> {
+            if (brake == false) {
+                if (orch.loadMusic("coin.chrp") != StatusCode.OK) {
+                    orch.play();
+                }
+            }
+            motor1.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+            motor2.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+            motor3.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+        });
     }
 
     @Override
