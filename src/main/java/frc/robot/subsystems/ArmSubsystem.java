@@ -107,7 +107,7 @@ public class ArmSubsystem extends SubsystemBase {
         // Figure out our starting position in degrees, and set the Falcon's onboard encoders to correspond
         sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         sensorTalon.configFeedbackNotContinuous(true, 0);
-        double startingPosition = (sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) * 360 / 4096;
+        double startingPosition = Math.floorMod((long)((sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) * 360 / 4096), (long)360.0);
         motor1.setPosition(startingPosition);
 
         // Set the arm setpoint to be the same as the starting position so that the arm doesn't move until we explicitly tell it to go somewhere else
