@@ -13,6 +13,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,7 +31,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /** Create a new subsystem */
     public VisionSubsystem(String camName, SwerveSubsystem swerve) {
-        System.out.println("Hello from VisionSubsystem! Initializing using " + camName);
+       DataLogManager.log("Initializing vision using " + camName);
         try {
             layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (IOException e) {
@@ -39,6 +40,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
 
         cam = new PhotonCamera(camName);
+        cam.setDriverMode(false);
 
         poseEst = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam, robotToCam);
         this.swerve = swerve;
