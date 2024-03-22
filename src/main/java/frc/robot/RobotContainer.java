@@ -38,6 +38,7 @@ import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -199,6 +200,11 @@ public class RobotContainer {
 
     // Reset pose-estimation when starting auton
     RobotModeTriggers.autonomous().onTrue(new InstantCommand(() -> {swerveSubsystem.resetGyroTo(swerveSubsystem.getPose().getRotation());}));
+    // Brake disabling
+    // Automatically go back to brake when you enable
+    RobotModeTriggers.disabled().onFalse(arm.setBrakeCommand(true));
+    // Disable brake when user button pressed
+    new Trigger(HALUtil::getFPGAButton).onTrue(arm.setBrakeCommand(false));
   }
 
   /**
