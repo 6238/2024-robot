@@ -205,6 +205,9 @@ public class RobotContainer {
     RobotModeTriggers.disabled().onFalse(arm.setBrakeCommand(true));
     // Disable brake when user button pressed
     new Trigger(HALUtil::getFPGAButton).onTrue(arm.setBrakeCommand(false));
+
+    // Stop rumble on disable
+    RobotModeTriggers.disabled().onTrue(new InstantCommand(() -> {driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0);}));
   }
 
   /**
