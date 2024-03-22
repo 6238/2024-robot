@@ -199,7 +199,7 @@ public class ArmSubsystem extends SubsystemBase {
             motor1.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
             motor2.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
             motor3.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-        });
+        }).ignoringDisable(true);
     }
 
     @Override
