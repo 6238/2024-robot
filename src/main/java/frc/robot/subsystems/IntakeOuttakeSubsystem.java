@@ -33,6 +33,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private SparkPIDController bottom_pidController;
   private RelativeEncoder top_encoder;
   private RelativeEncoder bottom_encoder;
+  private RelativeEncoder intake_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
   public DigitalInput limitSwitch = new DigitalInput(9);
 
@@ -62,6 +63,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
     top_encoder = outtakeTopMotor.getEncoder();
     bottom_encoder = outtakeBottomMotor.getEncoder();
+    intake_encoder = intakeMotor.getEncoder();
 
     kP = OuttakeGains.kP; 
     kI = OuttakeGains.kI;
@@ -136,8 +138,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("intakeMotorSpeed", intake_encoder.getVelocity());
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
-    SmartDashboard.putNumber("shooterSpeed", top_encoder.getVelocity());
+    SmartDashboard.putNumber("topShooterSpeed", top_encoder.getVelocity());
+    SmartDashboard.putNumber("bottomShooterSpeed", bottom_encoder.getVelocity());
   }
 
   @Override
