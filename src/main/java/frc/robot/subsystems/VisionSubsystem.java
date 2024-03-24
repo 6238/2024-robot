@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.telemetry.Alert;
+import frc.robot.telemetry.Alert.AlertType;
+
 import static edu.wpi.first.units.Units.*;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -28,6 +31,8 @@ public class VisionSubsystem extends SubsystemBase {
     private PhotonPoseEstimator poseEst;
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
+
+    private Alert camDisconnected = new Alert("AprilTag camera is disconnected, pose-est will not work!", AlertType.ERROR);
 
     /** Create a new subsystem */
     public VisionSubsystem(String camName, SwerveSubsystem swerve) {
@@ -49,6 +54,9 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Camera connected", cam.isConnected());
+        if (!cam.isConnected()) {
+            camDisconnected.set(true);
+        }
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
             if (pose.isPresent()) {

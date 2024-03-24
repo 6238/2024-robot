@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IDs;
 import frc.robot.Constants.OuttakeGains;
+import frc.robot.telemetry.Alert;
+import frc.robot.telemetry.Alert.AlertType;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -37,6 +39,8 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
   public DigitalInput limitSwitch = new DigitalInput(9);
 
+  private Alert motorFailed = new Alert("An intake/outtake motor failed to config", AlertType.ERROR);
+
   /** Creates a new ExampleSubsystem. */
   public IntakeOuttakeSubsystem() {
     intakeMotor = new CANSparkMax(IDs.INTAKE_MOTOR, CANSparkLowLevel.MotorType.kBrushless);
@@ -44,9 +48,15 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     outtakeBottomMotor = new CANSparkMax(IDs.OUTTAKE_BOTTOM_MOTOR, CANSparkLowLevel.MotorType.kBrushless);
 
     // Reset each motor so the configs are known-good
-    intakeMotor.restoreFactoryDefaults();
-    outtakeTopMotor.restoreFactoryDefaults();
-    outtakeBottomMotor.restoreFactoryDefaults();
+    if (intakeMotor.restoreFactoryDefaults() != REVLibError.kOk) {
+      motorFailed.set(true);
+    }
+    if (outtakeTopMotor.restoreFactoryDefaults() != REVLibError.kOk) {
+      motorFailed.set(true);
+    }  
+    if (outtakeBottomMotor.restoreFactoryDefaults() != REVLibError.kOk) {
+      motorFailed.set(true);
+    }  
 
     intakeMotor.setInverted(false);
 
