@@ -93,17 +93,19 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     NamedCommands.registerCommand("intake", new ParallelCommandGroup(
-      arm.setAngleCommand(ArmStates.INTAKE),
+      arm.runPIDwithAngle(ArmStates.INTAKE),
       new IntakeCommand(intake, true)));
     NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
       new ParallelDeadlineGroup(
-        new WaitCommand(2),
-        new InstantCommand(() -> intake.setMotors(0, 4500)),
+        new WaitCommand(1),
+        new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)),
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
       ),
-      new InstantCommand(() -> intake.setMotors(100, 4500))
+      new InstantCommand(() -> intake.setMotors(-100, Constants.Speeds.OUTTAKE_SPEED)),
+      new WaitCommand(.2)
     ));
+    NamedCommands.registerCommand("spinUp", new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)));
     NamedCommands.registerCommand("stow", arm.setAngleCommand(ArmStates.STOW));
     NamedCommands.registerCommand("stopCommand", new InstantCommand(() -> intake.setMotors(0, 0)));
     NamedCommands.registerCommand("zeroGyro", new InstantCommand(() -> swerveSubsystem.setGyroOffset()));
@@ -129,7 +131,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
+   * Use this method to define your trigger->command mappings. Triggers can be created via them
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link

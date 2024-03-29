@@ -120,7 +120,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   public Command startOutake() {
     return runOnce(() -> {
-      this.setMotors(0, 4500.0);
+      this.setMotors(0, Constants.Speeds.OUTTAKE_SPEED);
     });
   }
 
@@ -140,8 +140,8 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("intakeMotorSpeed", intake_encoder.getVelocity());
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
-    SmartDashboard.putNumber("topShooterSpeed", top_encoder.getVelocity());
-    SmartDashboard.putNumber("bottomShooterSpeed", bottom_encoder.getVelocity());
+    SmartDashboard.putNumber("topShooterSpeed", Math.abs(top_encoder.getVelocity()));
+    SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
   }
 
   @Override

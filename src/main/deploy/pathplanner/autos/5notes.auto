@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "start at note3"
+                  "pathName": "start at note1"
                 }
               },
               {
@@ -55,7 +55,38 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "note3 to note2"
+                  "pathName": "start at note4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "start at note1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "note1 to note2"
                 }
               },
               {
@@ -80,7 +111,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "note2 to note1"
+                  "pathName": "note2 to note3"
                 }
               },
               {
@@ -99,9 +130,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "stow"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "stow"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopCommand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source finish"
           }
         }
       ]

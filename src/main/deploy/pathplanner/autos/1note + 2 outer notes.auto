@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.3534532145483507,
+      "y": 5.882589720965468
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -30,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "start at note3"
+                  "pathName": "start at note1"
                 }
               },
               {
@@ -55,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "note3 to note2"
+                  "pathName": "start at note4"
                 }
               },
               {
@@ -65,6 +71,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot source side"
           }
         },
         {
@@ -80,7 +92,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "note2 to note1"
+                  "pathName": "go to note5"
                 }
               },
               {
@@ -93,15 +105,34 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "back from note5"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shoot"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "stow"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "stow"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stopCommand"
+                }
+              }
+            ]
           }
         }
       ]
