@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -52,4 +56,6 @@ public final class Constants {
     public static final double kMinOutput = -1;
     public static final double maxRPM = 5700.0;
   }
+
+  public static final Matrix<N3, N1> VISION_STDDEV = new Matrix<N3, N1>(N3.instance, N1.instance, new double[] {0.08, 0.2, 2.5});
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.telemetry.Alert;
 import frc.robot.telemetry.Alert.AlertType;
 
@@ -60,7 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
             if (pose.isPresent()) {
-                swerve.addVisionPose(pose.get());
+                swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
                 field.setRobotPose(pose.get().estimatedPose.toPose2d());
                 SmartDashboard.putData("VisionField", field);
             }
