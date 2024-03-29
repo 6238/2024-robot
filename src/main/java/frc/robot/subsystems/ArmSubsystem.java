@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.telemetry.Alert;
+import frc.robot.telemetry.Alert.AlertType;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -50,6 +52,9 @@ public class ArmSubsystem extends SubsystemBase {
     private final TalonSRX sensorTalon = new TalonSRX(14);
 
     Orchestra orch = new Orchestra();
+
+    private Alert encoderDisconnected = new Alert("Arm encoder is disconnected", AlertType.ERROR);
+    private Alert falconFailed = new Alert("Arm TalonFX failed to configure, possibly disconnected", AlertType.ERROR);
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
@@ -98,16 +103,45 @@ public class ArmSubsystem extends SubsystemBase {
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
             status = motor1.getConfigurator().apply(configs);
+            if (status.isOK())
+                break;
+        }
+        if (!status.isOK()) {
+            System.out.println("Could not apply configs to motor 1, error code: " + status.toString());
+            falconFailed.set(true);
+        }
+
+        status = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5; ++i) {
             status = motor2.getConfigurator().apply(configs);
+            if (status.isOK())
+                break;
+        }
+        if (!status.isOK()) {
+            System.out.println("Could not apply configs to motor 2, error code: " + status.toString());
+            falconFailed.set(true);
+        }
+
+
+        status = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5; ++i) {
             status = motor3.getConfigurator().apply(configs);
             if (status.isOK())
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply configs, error code: " + status.toString());
+            System.out.println("Could not apply configs to motor 3, error code: " + status.toString());
+            falconFailed.set(true);
         }
 
         // Figure out our starting position in degrees, and set the Falcon's onboard encoders to correspond
+
+        if (sensorTalon.getSensorCollection().getPulseWidthRiseToRiseUs() <= 10_000) {
+            // if we're getting a pulse width of less than 100 hertz (10k microseconds rise-to-rise), there's
+            // a good chance the encoder is disconnected
+            encoderDisconnected.set(true);
+        }
+
         sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         sensorTalon.configFeedbackNotContinuous(true, 0);
         double startingPosition = Math.floorMod((long)((sensorTalon.getSelectedSensorPosition() - Constants.ARM_ENCODER_ZERO) * 360 / 4096), (long)360.0);

@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.IDs;
 import frc.robot.Constants.OuttakeGains;
+import frc.robot.telemetry.Alert;
+import frc.robot.telemetry.Alert.AlertType;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -35,7 +37,11 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private RelativeEncoder bottom_encoder;
   private RelativeEncoder intake_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
-  public DigitalInput limitSwitch = new DigitalInput(9);
+  private DigitalInput limitSwitch1 = new DigitalInput(9);
+  private DigitalInput limitSwitch2 = new DigitalInput(8);
+  private DigitalInput limitSwitch3 = new DigitalInput(7);
+
+  private Alert motorFailed = new Alert("An intake/outtake motor failed to config", AlertType.ERROR);
 
   /** Creates a new ExampleSubsystem. */
   public IntakeOuttakeSubsystem() {
@@ -44,9 +50,15 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     outtakeBottomMotor = new CANSparkMax(IDs.OUTTAKE_BOTTOM_MOTOR, CANSparkLowLevel.MotorType.kBrushless);
 
     // Reset each motor so the configs are known-good
-    intakeMotor.restoreFactoryDefaults();
-    outtakeTopMotor.restoreFactoryDefaults();
-    outtakeBottomMotor.restoreFactoryDefaults();
+    if (intakeMotor.restoreFactoryDefaults() != REVLibError.kOk) {
+      motorFailed.set(true);
+    }
+    if (outtakeTopMotor.restoreFactoryDefaults() != REVLibError.kOk) {
+      motorFailed.set(true);
+    }  
+    if (outtakeBottomMotor.restoreFactoryDefaults() != REVLibError.kOk) {
+      motorFailed.set(true);
+    }  
 
     intakeMotor.setInverted(false);
 
@@ -95,7 +107,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   }
 
   public boolean intakeIsStalled() {
-    return !limitSwitch.get();
+    return this.isAnySwitchTriggered();
   }
   
   public double getShooterRPM(double requestedSpeed) {
@@ -142,10 +154,16 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("topShooterSpeed", Math.abs(top_encoder.getVelocity()));
     SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
+
+    SmartDashboard.putBooleanArray("beambreaks", new Boolean[] {!limitSwitch1.get(), !limitSwitch2.get(), !limitSwitch3.get()});
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  private boolean isAnySwitchTriggered() {
+    return !limitSwitch1.get() || !limitSwitch2.get() || !limitSwitch3.get();
   }
 }
