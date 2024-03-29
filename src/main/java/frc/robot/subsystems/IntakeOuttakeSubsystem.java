@@ -37,9 +37,9 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   private RelativeEncoder bottom_encoder;
   private RelativeEncoder intake_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
-  private DigitalInput limitSwitch1 = new DigitalInput(8);
-  private DigitalInput limitSwitch2 = new DigitalInput(7);
-  private DigitalInput limitSwitch3 = new DigitalInput(6);
+  private DigitalInput limitSwitch1 = new DigitalInput(9);
+  private DigitalInput limitSwitch2 = new DigitalInput(8);
+  private DigitalInput limitSwitch3 = new DigitalInput(7);
 
   private Alert motorFailed = new Alert("An intake/outtake motor failed to config", AlertType.ERROR);
 
@@ -154,6 +154,8 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("topShooterSpeed", top_encoder.getVelocity());
     SmartDashboard.putNumber("bottomShooterSpeed", bottom_encoder.getVelocity());
+
+    SmartDashboard.putBooleanArray("beambreaks", new Boolean[] {!limitSwitch1.get(), !limitSwitch2.get(), !limitSwitch3.get()});
   }
 
   @Override
