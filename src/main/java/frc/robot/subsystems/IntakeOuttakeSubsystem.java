@@ -159,7 +159,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
     SmartDashboard.putNumber("bottomShooterCurrent", outtakeBottomMotor.getOutputCurrent());
 
-    SmartDashboard.putBooleanArray("beambreaks", new Boolean[] {!limitSwitch1.get(), !limitSwitch2.get(), !limitSwitch3.get()});
+    SmartDashboard.putData(limitSwitch1);
+    SmartDashboard.putData(limitSwitch2);
+    SmartDashboard.putData(limitSwitch3);
+
   }
 
   @Override
