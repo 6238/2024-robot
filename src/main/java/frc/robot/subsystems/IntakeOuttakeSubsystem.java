@@ -28,12 +28,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import static frc.robot.Constants.OuttakeGains;
 
 public class IntakeOuttakeSubsystem extends SubsystemBase {
-  private CANSparkBase intakeMotor;
+  public CANSparkBase intakeMotor;
   private CANSparkBase outtakeTopMotor;
   private CANSparkBase outtakeBottomMotor;
   private SparkPIDController top_pidController;
   private SparkPIDController bottom_pidController;
-  private RelativeEncoder top_encoder;
+  public RelativeEncoder top_encoder;
   private RelativeEncoder bottom_encoder;
   private RelativeEncoder intake_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;

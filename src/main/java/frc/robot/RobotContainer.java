@@ -94,7 +94,7 @@ public class RobotContainer {
   public RobotContainer() {
     NamedCommands.registerCommand("intake", new ParallelCommandGroup(
       arm.runPIDwithAngle(ArmStates.INTAKE),
-      new IntakeCommand(intake, true)));
+      new IntakeCommand(intake, true, true)));
     NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
       new ParallelDeadlineGroup(
         new WaitCommand(1),
@@ -172,7 +172,15 @@ public class RobotContainer {
 
     // Right trigger to intake - lower arm, spin
     driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
-        new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake, false)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        arm.setAngleCommand(ArmStates.INTAKE),
+        new ParallelDeadlineGroup(new WaitCommand(.5), new InstantCommand(() -> intake.setMotors(Constants.Speeds.INTAKE_SPEED, -200))),
+        new IntakeCommand(intake, false, true), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        new ParallelDeadlineGroup(new WaitCommand(.1), new InstantCommand(() -> intake.setMotors(.35, -200))),
+        new InstantCommand(() -> intake.setMotors(Constants.Speeds.INTAKE_SPEED, -200)),
+        new WaitCommand(.2),
+        new IntakeCommand(intake, false, true), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        new ParallelDeadlineGroup(new WaitCommand(.1), new InstantCommand(() -> intake.setMotors(.35, -200))),
+        new InstantCommand(() -> intake.setMotors(0, -200)),
         arm.setAngleCommand(ArmStates.STOW),
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
         new WaitCommand(0.5), // Wait half a second

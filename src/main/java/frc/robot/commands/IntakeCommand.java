@@ -17,15 +17,17 @@ public class IntakeCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final IntakeOuttakeSubsystem m_subsystem;
   private boolean spinup;
+  private boolean beam;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public IntakeCommand(IntakeOuttakeSubsystem subsystem, boolean spinupBool) {
+  public IntakeCommand(IntakeOuttakeSubsystem subsystem, boolean spinupBool, boolean beamBreak) {
     m_subsystem = subsystem;
     spinup = spinupBool;
+    beam = beamBreak;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -33,7 +35,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED : -30.0);
+    m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED : -100.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,6 +52,11 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.intakeIsStalled();
+    // if (beam) {
+      return m_subsystem.intakeIsStalled();
+    // }
+    // else {
+    //   return Math.abs(m_subsystem.top_encoder.getVelocity()) < 1.0 || m_subsystem.intakeMotor.getOutputCurrent() > 75.0;
+    // }
   }
 }
