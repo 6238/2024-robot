@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -60,7 +62,16 @@ public class VisionSubsystem extends SubsystemBase {
         }
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
-            if (pose.isPresent() && pose.get().estimatedPose.getX() < 3.5) {
+            Optional<Alliance> ally = DriverStation.getAlliance();
+            Boolean blue = (ally.get() == Alliance.Blue);
+            Boolean inRange;
+            if (blue) {
+                inRange = pose.get().estimatedPose.getX() < 3.5;
+            }
+            else {
+                inRange = pose.get().estimatedPose.getX() > 16.55445;
+            }
+            if (pose.isPresent() && inRange) {
                 swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
                 field.setRobotPose(pose.get().estimatedPose.toPose2d());
                 SmartDashboard.putData("VisionField", field);
