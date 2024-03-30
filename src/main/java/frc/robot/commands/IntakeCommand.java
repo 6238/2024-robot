@@ -35,7 +35,12 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED : -100.0);
+    if (beam) {
+      m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED: 0);
+    }
+    else {
+      m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED : -100.0);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
