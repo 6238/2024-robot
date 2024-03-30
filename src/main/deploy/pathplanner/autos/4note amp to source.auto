@@ -101,6 +101,12 @@
         {
           "type": "named",
           "data": {
+            "name": "stopCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "stow"
           }
         }

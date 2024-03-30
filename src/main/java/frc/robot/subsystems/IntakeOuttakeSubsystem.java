@@ -29,8 +29,8 @@ import static frc.robot.Constants.OuttakeGains;
 
 public class IntakeOuttakeSubsystem extends SubsystemBase {
   public CANSparkBase intakeMotor;
-  private CANSparkBase outtakeTopMotor;
-  private CANSparkBase outtakeBottomMotor;
+  public CANSparkBase outtakeTopMotor;
+  public CANSparkBase outtakeBottomMotor;
   private SparkPIDController top_pidController;
   private SparkPIDController bottom_pidController;
   public RelativeEncoder top_encoder;
@@ -63,8 +63,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     intakeMotor.setInverted(false);
 
     intakeMotor.setSmartCurrentLimit(80);
-    outtakeTopMotor.setSmartCurrentLimit(80);
-    outtakeBottomMotor.setSmartCurrentLimit(80);
+    outtakeTopMotor.setSmartCurrentLimit(40);
+    outtakeTopMotor.setSecondaryCurrentLimit(20);
+    outtakeBottomMotor.setSmartCurrentLimit(40);
+    outtakeBottomMotor.setSecondaryCurrentLimit(20);
 
     intakeMotor.setIdleMode(IdleMode.kBrake);
     outtakeTopMotor.setIdleMode(IdleMode.kCoast);
@@ -153,7 +155,9 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("intakeMotorSpeed", intake_encoder.getVelocity());
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("topShooterSpeed", Math.abs(top_encoder.getVelocity()));
+    SmartDashboard.putNumber("topShooterCurrent", outtakeTopMotor.getOutputCurrent());
     SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
+    SmartDashboard.putNumber("bottomShooterCurrent", outtakeBottomMotor.getOutputCurrent());
 
     SmartDashboard.putBooleanArray("beambreaks", new Boolean[] {!limitSwitch1.get(), !limitSwitch2.get(), !limitSwitch3.get()});
   }

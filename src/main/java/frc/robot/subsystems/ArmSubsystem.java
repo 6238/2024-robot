@@ -38,10 +38,10 @@ public class ArmSubsystem extends SubsystemBase {
     private final PositionVoltage voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
     // Brake request to set when neutral
 
-    private double kP = 0.25;
+    private double kP = 0.4;
     private double kI = 0.05;
     private double kD = 0.0005;
-    private double setpoint = 0;
+    public double setpoint = 0;
 
     private TalonFXConfiguration configs = new TalonFXConfiguration();
 

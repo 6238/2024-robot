@@ -14,7 +14,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 0.75
           }
         },
         {
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "start at note4"
+                  "pathName": "to note5"
                 }
               },
               {
@@ -121,6 +121,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New New Path"
           }
         },
         {

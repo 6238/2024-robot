@@ -47,15 +47,15 @@ public final class Constants {
   public static final int ARM_ENCODER_ZERO = 3212;
 
   public static class OuttakeGains {
-    public static final double kP = 1e-6;
+    public static final double kP = 1e-4;
     public static final double kI = 1e-7;
     public static final double kD = 1e-5;
     public static final double kIz = 0; 
-    public static final double kFF = 0.0001; 
+    public static final double kFF = 0.000125; 
     public static final double kMaxOutput = 1; 
     public static final double kMinOutput = -1;
     public static final double maxRPM = 5700.0;
   }
 
-  public static final Matrix<N3, N1> VISION_STDDEV = new Matrix<N3, N1>(N3.instance, N1.instance, new double[] {0.08, 0.2, 2.5});
+  public static final Matrix<N3, N1> VISION_STDDEV = new Matrix<N3, N1>(N3.instance, N1.instance, new double[] {2.0, 2.0, 2.5});
 }

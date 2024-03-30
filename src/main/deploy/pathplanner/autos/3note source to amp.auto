@@ -8,19 +8,13 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "spinUp"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "start at note3"
+            "waitTime": 1.5
           }
         },
         {
@@ -30,21 +24,59 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "note3 to note2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "start at note3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "note3 to note2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopCommand"
           }
         },
         {

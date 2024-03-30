@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,7 +37,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     if (beam) {
-      m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED: 0);
+      m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED : 0);
     }
     else {
       m_subsystem.setMotors(Constants.Speeds.INTAKE_SPEED, spinup ? Constants.Speeds.OUTTAKE_SPEED : -100.0);
@@ -51,7 +52,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setMotors(0, 0);
+    m_subsystem.setMotors(0, spinup ? Constants.Speeds.OUTTAKE_SPEED : 0);
   }
 
   // Returns true when the command should end.

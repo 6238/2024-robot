@@ -97,7 +97,7 @@ public class RobotContainer {
       new IntakeCommand(intake, true, true)));
     NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
       new ParallelDeadlineGroup(
-        new WaitCommand(1),
+        new WaitCommand(1.0),
         new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)),
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
@@ -172,8 +172,8 @@ public class RobotContainer {
 
     // Right trigger to intake - lower arm, spin
     driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
+        arm.setAngleCommand(ArmStates.INTAKE),
         new IntakeCommand(intake, false, true),
-        // arm.setAngleCommand(ArmStates.INTAKE),
         // new ParallelDeadlineGroup(new WaitCommand(.5), new InstantCommand(() -> intake.setMotors(Constants.Speeds.INTAKE_SPEED, -200))),
         // new IntakeCommand(intake, false, false), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
         // new ParallelDeadlineGroup(new WaitCommand(.1), new InstantCommand(() -> intake.setMotors(.35, -200))),

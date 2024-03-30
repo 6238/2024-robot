@@ -28,7 +28,7 @@ public class VisionSubsystem extends SubsystemBase {
     private PhotonCamera cam;
     private final Transform3d robotToCam = new Transform3d(
             new Translation3d(Inches.of(-11.25), Inches.of(-4.75), Inches.of(8.5)),
-            new Rotation3d(Degrees.of(0).in(Radians), Degrees.of(-53).in(Radians), Degrees.of(180).in(Radians)));
+            new Rotation3d(Degrees.of(0).in(Radians), Degrees.of(-55).in(Radians), Degrees.of(180).in(Radians)));
     private PhotonPoseEstimator poseEst;
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
@@ -60,7 +60,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
-            if (pose.isPresent()) {
+            if (pose.isPresent() && pose.get().estimatedPose.getX() < 3.5) {
                 swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
                 field.setRobotPose(pose.get().estimatedPose.toPose2d());
                 SmartDashboard.putData("VisionField", field);
