@@ -22,10 +22,12 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
@@ -257,7 +259,9 @@ public class SwerveSubsystem extends SubsystemBase
 
   public double headingCalculate(double targetHeadingAngleRadians)
   {
-    return swerveDrive.swerveController.headingCalculate(getHeading().getRadians(), targetHeadingAngleRadians);
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    double offset = (ally.get() == Alliance.Blue) ? 0.0 : Math.PI;
+    return swerveDrive.swerveController.headingCalculate(getPose().getRotation().getRadians() + offset, targetHeadingAngleRadians);
   }
 
   /**
@@ -373,7 +377,7 @@ public class SwerveSubsystem extends SubsystemBase
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         new PIDConstants(4.0, 0.0005, 0.01),
                                          // Translation PID constants
                                          new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                                                           swerveDrive.swerveController.config.headingPIDF.i,

@@ -1,10 +1,13 @@
 package frc.robot.commands;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -38,6 +41,8 @@ public class DriveCommand extends Command {
 
     @Override
     public void execute() {
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        double sign = (ally.get() == Alliance.Blue) ? 1.0 : -1.0;
         SmartDashboard.putNumber("yawSetpoint", radians.getAsDouble());
         SmartDashboard.putBoolean("angleControl", angleControl.getAsBoolean());
         // Read from joysticks
@@ -46,7 +51,7 @@ public class DriveCommand extends Command {
         double multiplier = SmartDashboard.getNumber("aiming_velocity_multiplier", 1);
         double rotation = angleControl.getAsBoolean() == false ? rotationSpeed.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY : multiplier * subsys.headingCalculate(radians.getAsDouble());
 
-        Translation2d translation = new Translation2d(driveX * subsys.maximumSpeed, driveY * subsys.maximumSpeed);
+        Translation2d translation = new Translation2d(sign * driveX * subsys.maximumSpeed, sign * driveY * subsys.maximumSpeed);
         subsys.drive(translation, rotation, true);   
     }
 }

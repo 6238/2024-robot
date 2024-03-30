@@ -93,17 +93,19 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     NamedCommands.registerCommand("intake", new ParallelCommandGroup(
-      arm.setAngleCommand(ArmStates.INTAKE),
-      new IntakeCommand(intake, true)));
+      arm.runPIDwithAngle(ArmStates.INTAKE),
+      new IntakeCommand(intake, true, true)));
     NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
       new ParallelDeadlineGroup(
-        new WaitCommand(2),
-        new InstantCommand(() -> intake.setMotors(0, 4500)),
+        new WaitCommand(1),
+        new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)),
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
       ),
-      new InstantCommand(() -> intake.setMotors(100, 4500))
+      new InstantCommand(() -> intake.setMotors(-100, Constants.Speeds.OUTTAKE_SPEED)),
+      new WaitCommand(.2)
     ));
+    NamedCommands.registerCommand("spinUp", new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)));
     NamedCommands.registerCommand("stow", arm.setAngleCommand(ArmStates.STOW));
     NamedCommands.registerCommand("stopCommand", new InstantCommand(() -> intake.setMotors(0, 0)));
     NamedCommands.registerCommand("zeroGyro", new InstantCommand(() -> swerveSubsystem.setGyroOffset()));
@@ -129,7 +131,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
+   * Use this method to define your trigger->command mappings. Triggers can be created via them
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
@@ -170,7 +172,16 @@ public class RobotContainer {
 
     // Right trigger to intake - lower arm, spin
     driverXbox.leftTrigger().onTrue(new SequentialCommandGroup(
-        new ParallelCommandGroup(arm.setAngleCommand(ArmStates.INTAKE), new IntakeCommand(intake, false)), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        new IntakeCommand(intake, false, true),
+        // arm.setAngleCommand(ArmStates.INTAKE),
+        // new ParallelDeadlineGroup(new WaitCommand(.5), new InstantCommand(() -> intake.setMotors(Constants.Speeds.INTAKE_SPEED, -200))),
+        // new IntakeCommand(intake, false, false), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        // new ParallelDeadlineGroup(new WaitCommand(.1), new InstantCommand(() -> intake.setMotors(.35, -200))),
+        // new InstantCommand(() -> intake.setMotors(Constants.Speeds.INTAKE_SPEED, -200)),
+        // new WaitCommand(.2),
+        // new IntakeCommand(intake, false, false), // Simultaneously lower the arm and start the intake. Once the IntakeCommand is done (ie we have a note)...
+        // new ParallelDeadlineGroup(new WaitCommand(.1), new InstantCommand(() -> intake.setMotors(.35, -200))),
+        // new InstantCommand(() -> intake.setMotors(0, -200)),
         arm.setAngleCommand(ArmStates.STOW),
         new InstantCommand(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.5)), // Rumble the controller
         new WaitCommand(0.5), // Wait half a second

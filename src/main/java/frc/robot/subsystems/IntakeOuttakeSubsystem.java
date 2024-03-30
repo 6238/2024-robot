@@ -28,12 +28,12 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import static frc.robot.Constants.OuttakeGains;
 
 public class IntakeOuttakeSubsystem extends SubsystemBase {
-  private CANSparkBase intakeMotor;
+  public CANSparkBase intakeMotor;
   private CANSparkBase outtakeTopMotor;
   private CANSparkBase outtakeBottomMotor;
   private SparkPIDController top_pidController;
   private SparkPIDController bottom_pidController;
-  private RelativeEncoder top_encoder;
+  public RelativeEncoder top_encoder;
   private RelativeEncoder bottom_encoder;
   private RelativeEncoder intake_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
@@ -132,7 +132,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   public Command startOutake() {
     return runOnce(() -> {
-      this.setMotors(0, 4500.0);
+      this.setMotors(0, Constants.Speeds.OUTTAKE_SPEED);
     });
   }
 
@@ -152,8 +152,8 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("intakeMotorSpeed", intake_encoder.getVelocity());
     SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
-    SmartDashboard.putNumber("topShooterSpeed", top_encoder.getVelocity());
-    SmartDashboard.putNumber("bottomShooterSpeed", bottom_encoder.getVelocity());
+    SmartDashboard.putNumber("topShooterSpeed", Math.abs(top_encoder.getVelocity()));
+    SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
 
     SmartDashboard.putBooleanArray("beambreaks", new Boolean[] {!limitSwitch1.get(), !limitSwitch2.get(), !limitSwitch3.get()});
   }

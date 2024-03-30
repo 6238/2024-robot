@@ -38,9 +38,9 @@ public class ArmSubsystem extends SubsystemBase {
     private final PositionVoltage voltagePosition = new PositionVoltage(0, 0, false, 0, 0, false, false, false);
     // Brake request to set when neutral
 
-    private double kP = 0.1;
-    private double kI = 0.0001;
-    private double kD = 0.005;
+    private double kP = 0.25;
+    private double kI = 0.05;
+    private double kD = 0.0005;
     private double setpoint = 0;
 
     private TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -58,14 +58,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
-        entry(ArmStates.INTAKE, 15.0),
-        entry(ArmStates.SHOOT, 24.0),
-        entry(ArmStates.STOW, 75.0));
+        entry(ArmStates.INTAKE, 22.0),
+        entry(ArmStates.SHOOT, 37.0),
+        entry(ArmStates.STOW, 85.0));
 
     /** Creates a new ExampleSubsystem. */
     public ArmSubsystem() {
         
-        double motorToArm = .2155; // motor turns needed for the arm to turn fully
+        double motorToArm = 0.238480315; // motor turns needed for the arm to turn fully
 
         configs.Feedback.SensorToMechanismRatio = motorToArm;
 
@@ -96,9 +96,9 @@ public class ArmSubsystem extends SubsystemBase {
         motor3.setControl(new Follower(motor1.getDeviceID(), false));
         motor3.setNeutralMode(NeutralModeValue.Brake);
         
-        SmartDashboard.putNumber("regressionA", -6.58156);
-        SmartDashboard.putNumber("regressionB", 41.555);
-        SmartDashboard.putNumber("regressionC", -1.55917);
+        SmartDashboard.putNumber("regressionA", -1.22533);
+        SmartDashboard.putNumber("regressionB", 12.1372);
+        SmartDashboard.putNumber("regressionC", 30.6778);
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -178,10 +178,17 @@ public class ArmSubsystem extends SubsystemBase {
         double dist = Math.hypot(poseY.getAsDouble() - 5.547868, poseX.getAsDouble() - speakerX);
         SmartDashboard.putNumber("distFromSpeaker", dist);
         motor1.setControl(voltagePosition.withPosition(getArmAngle(dist)));
+        // motor1.setControl(voltagePosition.withPosition(SmartDashboard.getNumber("setpoint2", 47)));
     }
 
     public void runPID() {
         motor1.setControl(voltagePosition.withPosition(setpoint));
+    }
+
+    public Command runPIDwithAngle(ArmStates angle) {
+        return runOnce(() -> {
+            motor1.setControl(voltagePosition.withPosition(ANGLES.get(angle)));
+        });
     }
 
     public Command increaseSetpointCommand() {
