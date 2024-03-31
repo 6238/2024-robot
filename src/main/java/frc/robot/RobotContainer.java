@@ -13,11 +13,15 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.NudgeIntake;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SpinUpCommand;
+import frc.robot.commands.TransferP1Command;
+import frc.robot.commands.TransferP2Command;
 import frc.robot.commands.test.RotationTestCommand;
+import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.AmpSubsystem.AmpStates;
 import frc.robot.subsystems.ArmSubsystem.ArmStates;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,10 +70,12 @@ public class RobotContainer {
 
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
+  private final AmpSubsystem amp = new AmpSubsystem();
 
   File jsonDirectory;
 
   CommandXboxController driverXbox = new CommandXboxController(0);
+  CommandXboxController operatorXbox = new CommandXboxController(1);
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -123,6 +129,7 @@ public class RobotContainer {
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
+    amp.setDefaultCommand(amp.runPIDCommand());
       
     swerveSubsystem.setDefaultCommand(driveCmd);
 
@@ -205,12 +212,46 @@ public class RobotContainer {
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
-    driverXbox.rightBumper().onTrue(intake.stopCommand());
+    driverXbox.rightBumper().onTrue(new ParallelCommandGroup(
+      intake.stopCommand(),
+      new InstantCommand(() -> amp.motor1.set(0))
+    ));
+
+    operatorXbox.rightBumper().onTrue(new ParallelCommandGroup(
+      intake.stopCommand(),
+      new InstantCommand(() -> amp.motor1.set(0))
+    ));
+
+    driverXbox.leftBumper().onTrue(new SequentialCommandGroup(
+      arm.setAngleCommand(ArmStates.INTAKE),
+      new WaitCommand(.25),
+      amp.runPIDCommand(AmpStates.TRANSFER),
+      arm.runPIDwithAngle(ArmStates.TRANSFER),
+      new WaitCommand(.25),
+      new TransferP1Command(intake, amp),
+      new TransferP2Command(intake, amp)
+    ));
+
+    operatorXbox.leftTrigger().onTrue(amp.runPIDCommand(AmpStates.SHOOT));
+
+    operatorXbox.rightTrigger().onTrue(new SequentialCommandGroup(
+      new InstantCommand(() -> amp.motor1.set(-.5)),
+      new WaitCommand(1),
+      new InstantCommand(() -> amp.motor1.set(0)),
+      amp.runPIDCommand(AmpStates.STOW)
+    ));
 
     // driverXbox.leftBumper().onTrue(intake.startOutake())
 
     // Reset pose-estimation when starting auton
     RobotModeTriggers.autonomous().onTrue(new InstantCommand(() -> {swerveSubsystem.resetGyroTo(swerveSubsystem.getPose().getRotation());}));
+    RobotModeTriggers.autonomous().onTrue(new SequentialCommandGroup(
+      amp.runPIDCommand(AmpStates.UNLOAD),
+      new WaitCommand(.2),
+      arm.runPIDwithAngle(ArmStates.INTAKE),
+      new WaitCommand(.75),
+      amp.runPIDCommand(AmpStates.STOW)
+    ));
     // Brake disabling
     // Automatically go back to brake when you enable
     RobotModeTriggers.disabled().onFalse(arm.setBrakeCommand(true));

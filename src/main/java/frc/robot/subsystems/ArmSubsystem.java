@@ -56,10 +56,10 @@ public class ArmSubsystem extends SubsystemBase {
     private Alert encoderDisconnected = new Alert("Arm encoder is disconnected", AlertType.ERROR);
     private Alert falconFailed = new Alert("Arm TalonFX failed to configure, possibly disconnected", AlertType.ERROR);
 
-    // TODO: test and optimize these
     private static final Map<ArmStates, Double> ANGLES = Map.ofEntries(
+        entry(ArmStates.TRANSFER, 60.0),
         entry(ArmStates.INTAKE, 22.0),
-        entry(ArmStates.SHOOT, 37.0),
+        entry(ArmStates.SHOOT, 45.0),
         entry(ArmStates.STOW, 85.0));
 
     /** Creates a new ExampleSubsystem. */
@@ -187,6 +187,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Command runPIDwithAngle(ArmStates angle) {
         return runOnce(() -> {
+            setpoint = ANGLES.get(angle);
             motor1.setControl(voltagePosition.withPosition(ANGLES.get(angle)));
         });
     }
@@ -279,6 +280,7 @@ public class ArmSubsystem extends SubsystemBase {
      * States the arm can be in
      */
     public enum ArmStates {
+        TRANSFER,
         /** Lowered for intaking */
         INTAKE,
         /** Stowed - entirely within frame */
