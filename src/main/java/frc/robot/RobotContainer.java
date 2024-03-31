@@ -19,6 +19,7 @@ import frc.robot.commands.test.RotationTestCommand;
 import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.AmpSubsystem.AmpStates;
@@ -71,6 +72,7 @@ public class RobotContainer {
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final AmpSubsystem amp = new AmpSubsystem();
+  private final LEDSubsystem led = new LEDSubsystem();
 
   File jsonDirectory;
 
