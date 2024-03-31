@@ -35,11 +35,12 @@ public class VisionSubsystem extends SubsystemBase {
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
 
-    private Alert camDisconnected = new Alert("AprilTag camera is disconnected, pose-est will not work!", AlertType.ERROR);
+    private Alert camDisconnected = new Alert("AprilTag camera is disconnected, pose-est will not work!",
+            AlertType.ERROR);
 
     /** Create a new subsystem */
     public VisionSubsystem(String camName, SwerveSubsystem swerve) {
-       DataLogManager.log("Initializing vision using " + camName);
+        DataLogManager.log("Initializing vision using " + camName);
         try {
             layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (IOException e) {
@@ -65,16 +66,17 @@ public class VisionSubsystem extends SubsystemBase {
             Optional<Alliance> ally = DriverStation.getAlliance();
             Boolean blue = (ally.get() == Alliance.Blue);
             Boolean inRange;
-            if (blue) {
-                inRange = pose.get().estimatedPose.getX() < 3.5;
-            }
-            else {
-                inRange = pose.get().estimatedPose.getX() > 16.55445;
-            }
-            if (pose.isPresent() && inRange) {
-                swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
-                field.setRobotPose(pose.get().estimatedPose.toPose2d());
-                SmartDashboard.putData("VisionField", field);
+            if (pose.isPresent()) {
+                if (blue) {
+                    inRange = pose.get().estimatedPose.getX() < 3.5;
+                } else {
+                    inRange = pose.get().estimatedPose.getX() > 16.55445;
+                }
+                if (pose.isPresent() && inRange) {
+                    swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
+                    field.setRobotPose(pose.get().estimatedPose.toPose2d());
+                    SmartDashboard.putData("VisionField", field);
+                }
             }
         }
     }
