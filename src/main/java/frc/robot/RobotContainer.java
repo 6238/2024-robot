@@ -84,7 +84,8 @@ public class RobotContainer {
   }
   public double angleToSpeaker() {
     Optional<Alliance> ally = DriverStation.getAlliance();
-    double speakerX = (ally.get() == Alliance.Blue) ? 0.0 : 16.579342;
+    // SMELL: Using boolean short-circuiting to avoid throwing is very very cursed
+    double speakerX = (ally.isPresent() && (ally.get() == Alliance.Blue)) ? 0.0 : 16.579342;
     Pose2d pose = swerveSubsystem.getPose();
     return Math.atan((pose.getY() - 5.547868) / (pose.getX() - speakerX));
   }
