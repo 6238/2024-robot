@@ -64,9 +64,10 @@ public class VisionSubsystem extends SubsystemBase {
         if (cam.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
             Optional<Alliance> ally = DriverStation.getAlliance();
-            Boolean blue = (ally.get() == Alliance.Blue);
-            Boolean inRange;
+            boolean inRange;
             if (pose.isPresent()) {
+                boolean blue = (ally.get() == Alliance.Blue);
+
                 if (blue) {
                     inRange = pose.get().estimatedPose.getX() < 3.5;
                 } else {

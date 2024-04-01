@@ -263,6 +263,9 @@ public class RobotContainer {
 
     // Stop rumble on disable
     RobotModeTriggers.disabled().onTrue(new InstantCommand(() -> {driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0);}).ignoringDisable(true));
+
+    // #region LED commands
+    // #endregion
   }
 
   /**

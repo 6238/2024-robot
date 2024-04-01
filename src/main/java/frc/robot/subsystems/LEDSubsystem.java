@@ -4,7 +4,17 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Map.entry;
 
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
@@ -12,7 +22,7 @@ import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 public class LEDSubsystem extends SubsystemBase {
   private CANdle candle = new CANdle(40);
   private final int LED_COUNT = 8; // Just the onboard LEDs
-  private Animation currentAnimation = null;
+  private LEDMode currentMode = null;
 
   public LEDSubsystem() {
     CANdleConfiguration config = new CANdleConfiguration();
@@ -21,11 +31,51 @@ public class LEDSubsystem extends SubsystemBase {
     config.vBatOutputMode = VBatOutputMode.Off;
     candle.configAllSettings(config);
 
-    currentAnimation = new RainbowAnimation(1.0, 1.0, LED_COUNT);
+    currentMode = LEDMode.RAINBOW;
   }
 
   @Override
   public void periodic() {
-    candle.animate(currentAnimation);
+    candle.animate(MODES.get(currentMode));
+
+    // If disabled, we want to do the alliance pulse or default to rainbow
+    if (DriverStation.isDisabled()) {
+      this.setAnimation(this.getAllianceAnimation(DriverStation.getAlliance()));
+    }
   }
+
+  public void setAnimation(LEDMode mode) {
+    currentMode = mode;
+  }
+
+  private LEDMode getAllianceAnimation(Optional<Alliance> ally) {
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        return LEDMode.RED_SLOW_PULSE;
+      } else {
+        return LEDMode.BLUE_SLOW_PULSE;
+      }
+    } else {
+      return LEDMode.RAINBOW;
+    }
+  }
+
+  public Command setAnimationToAllianceColorCommand(Optional<Alliance> ally) {
+    return runOnce(() -> {
+      LEDMode anim = getAllianceAnimation(ally);
+      currentMode = anim;
+    }).ignoringDisable(true);
+  }
+
+  public enum LEDMode {
+    RED_SLOW_PULSE,
+    BLUE_SLOW_PULSE,
+    RAINBOW
+  }
+
+  private final Map<LEDMode, Animation> MODES = Map.ofEntries(
+    entry(LEDMode.RED_SLOW_PULSE, new SingleFadeAnimation(255, 0, 0, 0, 0.5, LED_COUNT, 0)),
+    entry(LEDMode.BLUE_SLOW_PULSE, new SingleFadeAnimation(0, 0, 255, 0, 0.5, LED_COUNT, 0)),
+    entry(LEDMode.RAINBOW, new RainbowAnimation(1.0, 1.0, LED_COUNT))
+  );
 }
