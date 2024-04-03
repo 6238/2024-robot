@@ -65,7 +65,7 @@ import static edu.wpi.first.units.Units.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.PHOTONCAMERA_NAME, swerveSubsystem);
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem);
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   DoubleSubscriber visionTopic = inst.getDoubleTopic("/vision/right_joystick").subscribe(0.0);
 
