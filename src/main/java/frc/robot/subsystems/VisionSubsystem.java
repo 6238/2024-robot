@@ -27,10 +27,14 @@ import static edu.wpi.first.units.Units.*;
 
 public class VisionSubsystem extends SubsystemBase {
     private AprilTagFieldLayout layout;
-    private PhotonCamera cam;
-    private final Transform3d robotToCam = new Transform3d(
+    private PhotonCamera cam_A;
+    private final Transform3d robotToCam_A = new Transform3d(
             new Translation3d(Inches.of(-11.25), Inches.of(-4.75), Inches.of(8.5)),
-            new Rotation3d(Degrees.of(0).in(Radians), Degrees.of(-55).in(Radians), Degrees.of(180).in(Radians)));
+            new Rotation3d(Degrees.of(180).in(Radians), Degrees.of(-55).in(Radians), Degrees.of(150).in(Radians)));
+    private PhotonCamera cam_B;
+    private final Transform3d robotToCam_B = new Transform3d(
+            new Translation3d(Inches.of(-11.25), Inches.of(-4.75), Inches.of(8.5)),
+            new Rotation3d(Degrees.of(180).in(Radians), Degrees.of(-55).in(Radians), Degrees.of(210).in(Radians)));
     private PhotonPoseEstimator poseEst;
     private SwerveSubsystem swerve;
     private Field2d field = new Field2d();
@@ -48,20 +52,20 @@ public class VisionSubsystem extends SubsystemBase {
             e.printStackTrace();
         }
 
-        cam = new PhotonCamera(camName);
-        cam.setDriverMode(false);
+        cam_A = new PhotonCamera(camName);
+        cam_A.setDriverMode(false);
 
-        poseEst = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam, robotToCam);
+        poseEst = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cam_A, robotToCam_A);
         this.swerve = swerve;
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Camera connected", cam.isConnected());
-        if (!cam.isConnected()) {
+        SmartDashboard.putBoolean("Camera connected", cam_A.isConnected());
+        if (!cam_A.isConnected()) {
             camDisconnected.set(true);
         }
-        if (cam.isConnected()) {
+        if (cam_A.isConnected()) {
             Optional<EstimatedRobotPose> pose = poseEst.update();
             Optional<Alliance> ally = DriverStation.getAlliance();
             Boolean blue = (ally.get() == Alliance.Blue);
