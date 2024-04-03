@@ -57,7 +57,7 @@ public class AmpSubsystem extends SubsystemBase {
 
   private static final Map<AmpStates, Double> ANGLES = Map.ofEntries(
         entry(AmpStates.TRANSFER, 87.0),
-        entry(AmpStates.SHOOT, 35.0),
+        entry(AmpStates.SHOOT, 18.0),
         entry(AmpStates.STOW, 140.0),
         entry(AmpStates.UNLOAD, 70.0));
 
@@ -102,13 +102,12 @@ public class AmpSubsystem extends SubsystemBase {
     angle_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     motor1.setNeutralMode(NeutralModeValue.Coast);
-    sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-    sensorTalon.configFeedbackNotContinuous(true, 0);
-
-    angle_encoder.setPosition(((-sensorTalon.getSelectedSensorPosition()*360)/4096) + 173.603516);
-    setpoint = ((-sensorTalon.getSelectedSensorPosition()*360)/4096) + 173.603516;
+    angle_encoder.setPosition(80.0);
 
     motor1.set(0.0);
+
+    sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    sensorTalon.configFeedbackNotContinuous(true, 0);
   }
 
   public Command runPIDCommand() {
@@ -147,7 +146,7 @@ public class AmpSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("amp_angle", angle_encoder.getPosition());
     SmartDashboard.putNumber("amp_angle_setpoint", this.setpoint);
-    SmartDashboard.putNumber("amp_encoder", angle_encoder.getPosition());
+    SmartDashboard.putNumber("amp_encoder", sensorTalon.getSelectedSensorPosition());
   }
 
   @Override
