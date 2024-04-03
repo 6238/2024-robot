@@ -9,6 +9,8 @@ import java.util.function.DoubleSupplier;
 
 import static java.util.Map.entry;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -47,6 +49,8 @@ public class AmpSubsystem extends SubsystemBase {
   private TalonFXConfiguration configs = new TalonFXConfiguration();
 
   public final TalonFX motor1 = new TalonFX(IDs.ROLLER_MOTOR);
+
+  private final TalonSRX sensorTalon = new TalonSRX(42);
 
   private Alert encoderDisconnected = new Alert("Arm encoder is disconnected", AlertType.ERROR);
   private Alert falconFailed = new Alert("Arm TalonFX failed to configure, possibly disconnected", AlertType.ERROR);
@@ -101,6 +105,9 @@ public class AmpSubsystem extends SubsystemBase {
     angle_encoder.setPosition(80.0);
 
     motor1.set(0.0);
+
+    sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    sensorTalon.configFeedbackNotContinuous(true, 0);
   }
 
   public Command runPIDCommand() {
@@ -110,6 +117,13 @@ public class AmpSubsystem extends SubsystemBase {
   }
   
   public Command runPIDCommand(AmpStates angle) {
+    return runOnce(() -> {
+      this.setpoint = ANGLES.get(angle);
+      angle_pidController.setReference(this.setpoint, CANSparkBase.ControlType.kPosition);
+    });
+  }
+
+  public Command runPID(AmpStates angle) {
     return runOnce(() -> {
       this.setpoint = ANGLES.get(angle);
       angle_pidController.setReference(this.setpoint, CANSparkBase.ControlType.kPosition);
@@ -132,6 +146,7 @@ public class AmpSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("amp_angle", angle_encoder.getPosition());
     SmartDashboard.putNumber("amp_angle_setpoint", this.setpoint);
+    SmartDashboard.putNumber("amp_encoder", sensorTalon.getSelectedSensorPosition());
   }
 
   @Override

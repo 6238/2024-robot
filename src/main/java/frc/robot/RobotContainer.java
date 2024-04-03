@@ -103,7 +103,7 @@ public class RobotContainer {
       new IntakeCommand(intake, true, true)));
     NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
       new ParallelDeadlineGroup(
-        new WaitCommand(1.0),
+        new WaitCommand(.75),
         new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)),
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
@@ -247,9 +247,9 @@ public class RobotContainer {
     RobotModeTriggers.autonomous().onTrue(new InstantCommand(() -> {swerveSubsystem.resetGyroTo(swerveSubsystem.getPose().getRotation());}));
     RobotModeTriggers.autonomous().onTrue(new SequentialCommandGroup(
       amp.runPIDCommand(AmpStates.UNLOAD),
-      new WaitCommand(.2),
+      new WaitCommand(.1),
       arm.runPIDwithAngle(ArmStates.INTAKE),
-      new WaitCommand(.75),
+      new WaitCommand(.5),
       amp.runPIDCommand(AmpStates.STOW)
     ));
     // Brake disabling

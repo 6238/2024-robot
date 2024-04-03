@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.AmpSubsystem;
+import frc.robot.subsystems.AmpSubsystem.AmpStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
@@ -57,6 +58,6 @@ public class TransferP2Command extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return amp.motor1.getPosition().getValue() < position - 1.75;
+    return amp.motor1.getPosition().getValue() < position - 2.0;
   }
 }

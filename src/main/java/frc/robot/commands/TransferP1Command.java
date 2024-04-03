@@ -6,8 +6,10 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.AmpSubsystem.AmpStates;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmStates;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
@@ -55,6 +57,6 @@ public class TransferP1Command extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return amp.motor1.getPosition().getValue() < position - .1;
+    return amp.motor1.getPosition().getValue() < position - .15;
   }
 }
