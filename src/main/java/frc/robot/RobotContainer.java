@@ -19,6 +19,7 @@ import frc.robot.commands.test.RotationTestCommand;
 import frc.robot.subsystems.AmpSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.AmpSubsystem.AmpStates;
@@ -71,6 +72,7 @@ public class RobotContainer {
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   private final AmpSubsystem amp = new AmpSubsystem();
+  private final LEDSubsystem led = new LEDSubsystem();
 
   File jsonDirectory;
 
@@ -84,7 +86,8 @@ public class RobotContainer {
   }
   public double angleToSpeaker() {
     Optional<Alliance> ally = DriverStation.getAlliance();
-    double speakerX = (ally.get() == Alliance.Blue) ? 0.0 : 16.579342;
+    // SMELL: Using boolean short-circuiting to avoid throwing is very very cursed
+    double speakerX = (ally.isPresent() && (ally.get() == Alliance.Blue)) ? 0.0 : 16.579342;
     Pose2d pose = swerveSubsystem.getPose();
     return Math.atan((pose.getY() - 5.547868) / (pose.getX() - speakerX));
   }
@@ -260,6 +263,9 @@ public class RobotContainer {
 
     // Stop rumble on disable
     RobotModeTriggers.disabled().onTrue(new InstantCommand(() -> {driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0);}).ignoringDisable(true));
+
+    // #region LED commands
+    // #endregion
   }
 
   /**
