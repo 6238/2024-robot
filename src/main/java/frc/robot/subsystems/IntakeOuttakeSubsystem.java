@@ -33,6 +33,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   public CANSparkBase outtakeBottomMotor;
   private SparkPIDController top_pidController;
   private SparkPIDController bottom_pidController;
+  private SparkPIDController intake_pidController;
   public RelativeEncoder top_encoder;
   private RelativeEncoder bottom_encoder;
   private RelativeEncoder intake_encoder;
@@ -74,6 +75,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
     top_pidController = outtakeTopMotor.getPIDController();
     bottom_pidController = outtakeBottomMotor.getPIDController();
+    intake_pidController = intakeMotor.getPIDController();
 
     top_encoder = outtakeTopMotor.getEncoder();
     bottom_encoder = outtakeBottomMotor.getEncoder();
@@ -105,6 +107,13 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
     bottom_pidController.setFF(kFF);
     bottom_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
+    intake_pidController.setP(kP);
+    intake_pidController.setI(kI);
+    intake_pidController.setD(kD);
+    intake_pidController.setIZone(kIz);
+    intake_pidController.setFF(kFF);
+    intake_pidController.setOutputRange(kMinOutput, kMaxOutput);
+
     SmartDashboard.putNumber("shooterRPM", 1000.0);
   }
 
@@ -117,10 +126,10 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   }
 
   public void setMotors(double intake, double outtake) {
-    intakeMotor.set(intake);
     SmartDashboard.putNumber("shooterSpeedSetpoint", outtake);
     top_pidController.setReference(-outtake, CANSparkMax.ControlType.kVelocity);
     bottom_pidController.setReference(outtake, CANSparkMax.ControlType.kVelocity);
+    intake_pidController.setReference(intake, CANSparkMax.ControlType.kVelocity);
   }
 
   public Command setMotors(double intake, DoubleSupplier outtake) {
@@ -129,6 +138,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("shooterSpeedSetpoint", outtake.getAsDouble());
       top_pidController.setReference(-outtake.getAsDouble(), CANSparkMax.ControlType.kVelocity);
       bottom_pidController.setReference(outtake.getAsDouble(), CANSparkMax.ControlType.kVelocity);
+      intake_pidController.setReference(intake, CANSparkMax.ControlType.kVelocity);
     });
   }
 

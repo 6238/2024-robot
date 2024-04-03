@@ -40,7 +40,7 @@ public class TransferP1Command extends Command {
   @Override
   public void initialize() {
     position = amp.motor1.getPosition().getValue();
-    intake.setMotors(-.40, Constants.Speeds.SHOOTER_TRANSFER_SPEED);
+    intake.setMotors(Constants.Speeds.INTAKE_SPEED, Constants.Speeds.SHOOTER_TRANSFER_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,6 +57,6 @@ public class TransferP1Command extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return amp.motor1.getPosition().getValue() < position - .15;
+    return amp.motor1.getPosition().getValue() < position - .1;
   }
 }

@@ -78,7 +78,7 @@ public class VisionSubsystem extends SubsystemBase {
                     inRange = pose.get().estimatedPose.getX() > 16.55445;
                 }
                 if (pose.isPresent() && inRange) {
-                    swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
+                    // swerve.addVisionPose(pose.get(), Constants.VISION_STDDEV);
                     field.setRobotPose(pose.get().estimatedPose.toPose2d());
                     SmartDashboard.putData("VisionField", field);
                 }

@@ -111,7 +111,7 @@ public class RobotContainer {
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
       ),
-      new InstantCommand(() -> intake.setMotors(-100, Constants.Speeds.OUTTAKE_SPEED)),
+      new InstantCommand(() -> intake.setMotors(-4000, Constants.Speeds.OUTTAKE_SPEED)),
       new WaitCommand(.2)
     ));
     NamedCommands.registerCommand("spinUp", new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)));
@@ -156,6 +156,7 @@ public class RobotContainer {
     driverXbox.a().onTrue(arm.setAngleCommand(ArmStates.STOW));
     driverXbox.x().whileTrue(intake.ejectCommand());
     driverXbox.x().onFalse(intake.stopCommand());
+    operatorXbox.x().onTrue(amp.runPIDCommand(AmpStates.STOW));
     // #region testing commands
     // // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
@@ -238,7 +239,7 @@ public class RobotContainer {
     operatorXbox.leftTrigger().onTrue(amp.runPIDCommand(AmpStates.SHOOT));
 
     operatorXbox.rightTrigger().onTrue(new SequentialCommandGroup(
-      new InstantCommand(() -> amp.motor1.set(-.5)),
+      new InstantCommand(() -> amp.motor1.set(-.6)),
       new WaitCommand(1),
       new InstantCommand(() -> amp.motor1.set(0)),
       amp.runPIDCommand(AmpStates.STOW)

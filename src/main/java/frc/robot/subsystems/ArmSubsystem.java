@@ -157,7 +157,7 @@ public class ArmSubsystem extends SubsystemBase {
         double b = SmartDashboard.getNumber("regressionB", 20.0303);
         double c = SmartDashboard.getNumber("regressionC", 4.88624);
         double angle = a * Math.pow(dist, 2) + b * dist + c;
-        if (angle > 19 && angle < 110) {
+        if (angle > 19 && angle < 75) {
             setpoint = angle;
             return angle;
         }
