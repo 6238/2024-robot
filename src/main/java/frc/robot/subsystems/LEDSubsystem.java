@@ -18,11 +18,13 @@ import static java.util.Map.entry;
 
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 
 public class LEDSubsystem extends SubsystemBase {
   private CANdle candle = new CANdle(40);
   private final int LED_COUNT = 8; // Just the onboard LEDs
   private LEDMode currentMode = null;
+  private LEDMode lastSentMode = null;
 
   public LEDSubsystem() {
     CANdleConfiguration config = new CANdleConfiguration();
@@ -36,7 +38,11 @@ public class LEDSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    candle.animate(MODES.get(currentMode));
+    if (currentMode != lastSentMode) {
+      candle.animate(MODES.get(currentMode));
+      lastSentMode = currentMode;
+    }
+    
 
     // If disabled, we want to do the alliance pulse or default to rainbow
     if (DriverStation.isDisabled()) {
@@ -67,15 +73,31 @@ public class LEDSubsystem extends SubsystemBase {
     }).ignoringDisable(true);
   }
 
+  public Command indicateNeedNoteCommand() {
+    return runOnce(() -> {
+      currentMode = LEDMode.ORANGE_QUICK_PULSE;
+    });
+  }
+
+  public Command indicateIntookCommand() {
+    return runOnce(() -> {
+      currentMode = LEDMode.PURPLE_CHASE;
+    });
+  }
+
   public enum LEDMode {
     RED_SLOW_PULSE,
     BLUE_SLOW_PULSE,
-    RAINBOW
+    RAINBOW,
+    ORANGE_QUICK_PULSE, 
+    PURPLE_CHASE
   }
 
   private final Map<LEDMode, Animation> MODES = Map.ofEntries(
     entry(LEDMode.RED_SLOW_PULSE, new SingleFadeAnimation(255, 0, 0, 0, 0.5, LED_COUNT, 0)),
     entry(LEDMode.BLUE_SLOW_PULSE, new SingleFadeAnimation(0, 0, 255, 0, 0.5, LED_COUNT, 0)),
-    entry(LEDMode.RAINBOW, new RainbowAnimation(1.0, 1.0, LED_COUNT))
+    entry(LEDMode.RAINBOW, new RainbowAnimation(1.0, 1.0, LED_COUNT)),
+    entry(LEDMode.ORANGE_QUICK_PULSE, new SingleFadeAnimation(255, 165, 0, 0, 0.75, LED_COUNT, 0)),
+    entry(LEDMode.PURPLE_CHASE, new ColorFlowAnimation(255, 0, 255, 0, 0.75, LED_COUNT, Direction.Forward))
   );
 }
