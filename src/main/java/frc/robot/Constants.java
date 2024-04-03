@@ -39,15 +39,15 @@ public final class Constants {
   }
 
   public static class Speeds {
-    public static final double INTAKE_SPEED = -2000;
+    public static final double INTAKE_SPEED = -0.55;
     public static final double OUTTAKE_SPEED = 3000; 
     public static final double SHOOTER_TRANSFER_SPEED = 350; 
-    public static final double AMP_TRANSFER_SPEED = -.4; 
+    public static final double AMP_TRANSFER_SPEED = -.35; 
   }
   public static final double MIN_DELTA_V = 0;
   public static final double MIN_V = 60;
   public static final double SHOOT_DELAY = 1;
-  public static final double NUDGE_SPEED = 2000;
+  public static final double NUDGE_SPEED = .4;
 
   public static final int ARM_ENCODER_ZERO = 3212;
 
@@ -56,7 +56,7 @@ public final class Constants {
     public static final double kI = 1e-7;
     public static final double kD = 1e-5;
     public static final double kIz = 0; 
-    public static final double kFF = 0.000125; 
+    public static final double kFF = 0.000135; 
     public static final double kMaxOutput = 1; 
     public static final double kMinOutput = -1;
     public static final double maxRPM = 5700.0;

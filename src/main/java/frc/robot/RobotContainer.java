@@ -111,11 +111,12 @@ public class RobotContainer {
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
       ),
-      new InstantCommand(() -> intake.setMotors(-4000, Constants.Speeds.OUTTAKE_SPEED)),
+      new InstantCommand(() -> intake.setMotors(-100, Constants.Speeds.OUTTAKE_SPEED)),
       new WaitCommand(.2)
     ));
     NamedCommands.registerCommand("spinUp", new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)));
     NamedCommands.registerCommand("stow", arm.setAngleCommand(ArmStates.STOW));
+    NamedCommands.registerCommand("intake", arm.setAngleCommand(ArmStates.INTAKE));
     NamedCommands.registerCommand("stopCommand", new InstantCommand(() -> intake.setMotors(0, 0)));
     NamedCommands.registerCommand("zeroGyro", new InstantCommand(() -> swerveSubsystem.setGyroOffset()));
 
@@ -249,13 +250,13 @@ public class RobotContainer {
 
     // Reset pose-estimation when starting auton
     RobotModeTriggers.autonomous().onTrue(new InstantCommand(() -> {swerveSubsystem.resetGyroTo(swerveSubsystem.getPose().getRotation());}));
-    RobotModeTriggers.autonomous().onTrue(new SequentialCommandGroup(
-      amp.runPIDCommand(AmpStates.UNLOAD),
-      new WaitCommand(.1),
-      arm.runPIDwithAngle(ArmStates.INTAKE),
-      new WaitCommand(.5),
-      amp.runPIDCommand(AmpStates.STOW)
-    ));
+    // RobotModeTriggers.autonomous().onTrue(new SequentialCommandGroup(
+    //   amp.runPIDCommand(AmpStates.UNLOAD),
+    //   new WaitCommand(.1),
+    //   arm.runPIDwithAngle(ArmStates.INTAKE),
+    //   new WaitCommand(.5),
+    //   amp.runPIDCommand(AmpStates.STOW)
+    // ));
     // Brake disabling
     // Automatically go back to brake when you enable
     RobotModeTriggers.disabled().onFalse(arm.setBrakeCommand(true));
