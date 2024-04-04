@@ -57,7 +57,7 @@ public class AmpSubsystem extends SubsystemBase {
 
   private static final Map<AmpStates, Double> ANGLES = Map.ofEntries(
         entry(AmpStates.TRANSFER, 100.0),
-        entry(AmpStates.SHOOT, 18.0),
+        entry(AmpStates.SHOOT, 28.0),
         entry(AmpStates.STOW, 140.0),
         entry(AmpStates.UNLOAD, 70.0));
 

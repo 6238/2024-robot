@@ -227,7 +227,7 @@ public class RobotContainer {
       new InstantCommand(() -> amp.motor1.set(0))
     ));
 
-    driverXbox.leftBumper().onTrue(new SequentialCommandGroup(
+    operatorXbox.b().onTrue(new SequentialCommandGroup(
       arm.setAngleCommand(ArmStates.INTAKE),
       new WaitCommand(.25),
       amp.runPIDCommand(AmpStates.TRANSFER),
@@ -268,8 +268,8 @@ public class RobotContainer {
 
     // #region LED commands
     new Trigger(intake::intakeIsStalled).whileTrue(led.indicateIntookCommand());
-    operatorXbox.a().onTrue(led.indicateNeedNoteCommand());
-    operatorXbox.b().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
+    operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
+    operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     // #endregion
   }
 
