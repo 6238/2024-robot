@@ -33,6 +33,7 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
   public CANSparkBase outtakeBottomMotor;
   private SparkPIDController top_pidController;
   private SparkPIDController bottom_pidController;
+  private SparkPIDController intake_pidController;
   public RelativeEncoder top_encoder;
   private RelativeEncoder bottom_encoder;
   private RelativeEncoder intake_encoder;
