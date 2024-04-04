@@ -153,12 +153,12 @@ public class IntakeOuttakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("intakeMotorSpeed", intake_encoder.getVelocity());
-    SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
-    SmartDashboard.putNumber("topShooterSpeed", Math.abs(top_encoder.getVelocity()));
-    SmartDashboard.putNumber("topShooterCurrent", outtakeTopMotor.getOutputCurrent());
-    SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
-    SmartDashboard.putNumber("bottomShooterCurrent", outtakeBottomMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("intakeMotorSpeed", intake_encoder.getVelocity());
+    // SmartDashboard.putNumber("intakeMotorCurrent", intakeMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("topShooterSpeed", Math.abs(top_encoder.getVelocity()));
+    // SmartDashboard.putNumber("topShooterCurrent", outtakeTopMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("bottomShooterSpeed", Math.abs(bottom_encoder.getVelocity()));
+    // SmartDashboard.putNumber("bottomShooterCurrent", outtakeBottomMotor.getOutputCurrent());
 
     SmartDashboard.putData(limitSwitch1);
     SmartDashboard.putData(limitSwitch2);

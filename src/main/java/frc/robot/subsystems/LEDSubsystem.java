@@ -97,7 +97,7 @@ public class LEDSubsystem extends SubsystemBase {
     entry(LEDMode.RED_SLOW_PULSE, new SingleFadeAnimation(255, 0, 0, 0, 0.5, LED_COUNT, 0)),
     entry(LEDMode.BLUE_SLOW_PULSE, new SingleFadeAnimation(0, 0, 255, 0, 0.5, LED_COUNT, 0)),
     entry(LEDMode.RAINBOW, new RainbowAnimation(1.0, 1.0, LED_COUNT)),
-    entry(LEDMode.ORANGE_QUICK_PULSE, new SingleFadeAnimation(255, 165, 0, 0, 0.75, LED_COUNT, 0)),
+    entry(LEDMode.ORANGE_QUICK_PULSE, new SingleFadeAnimation(255, 165, 0, 0, 1, LED_COUNT, 0)),
     entry(LEDMode.PURPLE_CHASE, new ColorFlowAnimation(255, 0, 255, 0, 0.75, LED_COUNT, Direction.Forward))
   );
 }
