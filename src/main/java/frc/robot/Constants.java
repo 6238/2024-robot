@@ -62,8 +62,8 @@ public final class Constants {
     public static final double maxRPM = 5700.0;
   }
   public static class OuttakeGainsAmp {
-    public static final double kP = 0.005;
-    public static final double kI = 0.0;
+    public static final double kP = 0.009;
+    public static final double kI = 1e-6;
     public static final double kD = 0.01;
     public static final double kIz = 0.0; 
     public static final double kFF = 0.0; 

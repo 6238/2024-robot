@@ -56,7 +56,7 @@ public class AmpSubsystem extends SubsystemBase {
   private Alert falconFailed = new Alert("Arm TalonFX failed to configure, possibly disconnected", AlertType.ERROR);
 
   private static final Map<AmpStates, Double> ANGLES = Map.ofEntries(
-        entry(AmpStates.TRANSFER, 87.0),
+        entry(AmpStates.TRANSFER, 100.0),
         entry(AmpStates.SHOOT, 18.0),
         entry(AmpStates.STOW, 140.0),
         entry(AmpStates.UNLOAD, 70.0));
@@ -102,12 +102,12 @@ public class AmpSubsystem extends SubsystemBase {
     angle_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     motor1.setNeutralMode(NeutralModeValue.Coast);
-    angle_encoder.setPosition(80.0);
 
     motor1.set(0.0);
 
     sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     sensorTalon.configFeedbackNotContinuous(true, 0);
+    angle_encoder.setPosition(Math.floorMod((long)(((sensorTalon.getSelectedSensorPosition()) * 360 / 4096)+118), (long)360.0));
   }
 
   public Command runPIDCommand() {
