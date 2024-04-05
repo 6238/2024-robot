@@ -111,7 +111,7 @@ public class RobotContainer {
         new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY()),
         new DriveCommand(swerveSubsystem, () -> 0.0,() -> 0.0,() -> 0.0,() -> true,() -> angleToSpeaker())
       ),
-      new InstantCommand(() -> intake.setMotors(-4000, Constants.Speeds.OUTTAKE_SPEED)),
+      new InstantCommand(() -> intake.setMotors(-100, Constants.Speeds.OUTTAKE_SPEED)),
       new WaitCommand(.2)
     ));
     NamedCommands.registerCommand("spinUp", new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)));
@@ -227,7 +227,7 @@ public class RobotContainer {
       new InstantCommand(() -> amp.motor1.set(0))
     ));
 
-    driverXbox.leftBumper().onTrue(new SequentialCommandGroup(
+    operatorXbox.b().onTrue(new SequentialCommandGroup(
       arm.setAngleCommand(ArmStates.INTAKE),
       new WaitCommand(.25),
       amp.runPIDCommand(AmpStates.TRANSFER),
@@ -250,13 +250,13 @@ public class RobotContainer {
 
     // Reset pose-estimation when starting auton
     RobotModeTriggers.autonomous().onTrue(new InstantCommand(() -> {swerveSubsystem.resetGyroTo(swerveSubsystem.getPose().getRotation());}));
-    RobotModeTriggers.autonomous().onTrue(new SequentialCommandGroup(
-      amp.runPIDCommand(AmpStates.UNLOAD),
-      new WaitCommand(.1),
-      arm.runPIDwithAngle(ArmStates.INTAKE),
-      new WaitCommand(.5),
-      amp.runPIDCommand(AmpStates.STOW)
-    ));
+    // RobotModeTriggers.autonomous().onTrue(new SequentialCommandGroup(
+    //   amp.runPIDCommand(AmpStates.UNLOAD),
+    //   new WaitCommand(.1),
+    //   arm.runPIDwithAngle(ArmStates.INTAKE),
+    //   new WaitCommand(.5),
+    //   amp.runPIDCommand(AmpStates.STOW)
+    // ));
     // Brake disabling
     // Automatically go back to brake when you enable
     RobotModeTriggers.disabled().onFalse(arm.setBrakeCommand(true));
@@ -267,6 +267,9 @@ public class RobotContainer {
     RobotModeTriggers.disabled().onTrue(new InstantCommand(() -> {driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0);}).ignoringDisable(true));
 
     // #region LED commands
+    new Trigger(intake::intakeIsStalled).whileTrue(led.indicateIntookCommand());
+    operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
+    operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     // #endregion
   }
 

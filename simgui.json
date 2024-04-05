@@ -13,6 +13,9 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Path": "String Chooser",
       "/SmartDashboard/Auto routine": "String Chooser",
+      "/SmartDashboard/DigitalInput[7]": "Digital Input",
+      "/SmartDashboard/DigitalInput[8]": "Digital Input",
+      "/SmartDashboard/DigitalInput[9]": "Digital Input",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/navX-Sensor[1]": "Gyro",
       "/SmartDashboard/navX-Sensor[4]": "Gyro"
@@ -62,6 +65,7 @@
         "open": true
       },
       "open": true
-    }
+    },
+    "visible": true
   }
 }

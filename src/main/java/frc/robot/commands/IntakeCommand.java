@@ -52,6 +52,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DataLogManager.log("intake ended" + interrupted);
     m_subsystem.setMotors(0, spinup ? Constants.Speeds.OUTTAKE_SPEED : 0);
   }
 

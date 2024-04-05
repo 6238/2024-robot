@@ -11,6 +11,9 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.IntakeOuttakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmStates;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +43,7 @@ public class TransferP1Command extends Command {
   @Override
   public void initialize() {
     position = amp.motor1.getPosition().getValue();
+    amp.motor1.setNeutralMode(NeutralModeValue.Brake);
     intake.setMotors(Constants.Speeds.INTAKE_SPEED, Constants.Speeds.SHOOTER_TRANSFER_SPEED);
   }
 
