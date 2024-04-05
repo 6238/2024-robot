@@ -43,7 +43,6 @@ public class TransferP1Command extends Command {
   @Override
   public void initialize() {
     position = amp.motor1.getPosition().getValue();
-    amp.motor1.setNeutralMode(NeutralModeValue.Brake);
     intake.setMotors(Constants.Speeds.INTAKE_SPEED, Constants.Speeds.SHOOTER_TRANSFER_SPEED);
   }
 

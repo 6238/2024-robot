@@ -56,7 +56,7 @@ public class AmpSubsystem extends SubsystemBase {
   private Alert falconFailed = new Alert("Arm TalonFX failed to configure, possibly disconnected", AlertType.ERROR);
 
   private static final Map<AmpStates, Double> ANGLES = Map.ofEntries(
-        entry(AmpStates.TRANSFER, 100.0),
+        entry(AmpStates.TRANSFER, 97.5),
         entry(AmpStates.SHOOT, 28.0),
         entry(AmpStates.STOW, 140.0),
         entry(AmpStates.UNLOAD, 70.0));
@@ -95,19 +95,24 @@ public class AmpSubsystem extends SubsystemBase {
     maxRPM = OuttakeGainsAmp.maxRPM;
 
     angle_pidController.setP(kP);
+    SmartDashboard.putNumber("ampkP", kP);
     angle_pidController.setI(kI);
+    SmartDashboard.putNumber("ampkI", kI);
     angle_pidController.setD(kD);
+    SmartDashboard.putNumber("ampkD", kD);
     angle_pidController.setIZone(kIz);
     angle_pidController.setFF(kFF);
     angle_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    motor1.setNeutralMode(NeutralModeValue.Coast);
+    motor1.setNeutralMode(NeutralModeValue.Brake);
 
     motor1.set(0.0);
 
     sensorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     sensorTalon.configFeedbackNotContinuous(true, 0);
-    angle_encoder.setPosition(Math.floorMod((long)(((sensorTalon.getSelectedSensorPosition()) * 360 / 4096)+118), (long)360.0));
+    setpoint = Math.floorMod((long)(((sensorTalon.getSelectedSensorPosition()) * 360 / 4096)+118), (long)360.0);
+    angle_encoder.setPosition(setpoint);
+
   }
 
   public Command runPIDCommand() {
@@ -147,6 +152,12 @@ public class AmpSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("amp_angle", angle_encoder.getPosition());
     SmartDashboard.putNumber("amp_angle_setpoint", this.setpoint);
     SmartDashboard.putNumber("amp_encoder", sensorTalon.getSelectedSensorPosition());
+    double P = SmartDashboard.getNumber("ampkP", kP);
+    angle_pidController.setP(P);
+    double I = SmartDashboard.getNumber("ampkI", kI);
+    angle_pidController.setI(I);
+    double D = SmartDashboard.getNumber("ampkD", kD);
+    angle_pidController.setD(D);
   }
 
   @Override

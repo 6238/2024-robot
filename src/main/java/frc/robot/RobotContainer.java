@@ -228,11 +228,13 @@ public class RobotContainer {
     ));
 
     operatorXbox.b().onTrue(new SequentialCommandGroup(
-      arm.setAngleCommand(ArmStates.INTAKE),
+      new InstantCommand(() -> intake.setMotors(0.0, 0.0)),
       new WaitCommand(.25),
+      arm.setAngleCommand(ArmStates.INTAKE),
+      new WaitCommand(.2),
       amp.runPIDCommand(AmpStates.TRANSFER),
       arm.runPIDwithAngle(ArmStates.TRANSFER),
-      new WaitCommand(.25),
+      new WaitCommand(1),
       new TransferP1Command(intake, amp),
       new TransferP2Command(intake, amp)
     ));
