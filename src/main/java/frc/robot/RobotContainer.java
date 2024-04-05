@@ -116,6 +116,7 @@ public class RobotContainer {
     ));
     NamedCommands.registerCommand("spinUp", new InstantCommand(() -> intake.setMotors(0, Constants.Speeds.OUTTAKE_SPEED)));
     NamedCommands.registerCommand("stow", arm.setAngleCommand(ArmStates.STOW));
+    NamedCommands.registerCommand("intakePosition", arm.setAngleCommand(ArmStates.INTAKE));
     NamedCommands.registerCommand("stopCommand", new InstantCommand(() -> intake.setMotors(0, 0)));
     NamedCommands.registerCommand("zeroGyro", new InstantCommand(() -> swerveSubsystem.setGyroOffset()));
 
