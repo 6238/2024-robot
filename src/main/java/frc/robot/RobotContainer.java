@@ -153,7 +153,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     driverXbox.start().onTrue((new InstantCommand(swerveSubsystem::zeroGyro)));
-    driverXbox.y().onTrue(arm.setAngleCommand(120.0));
+    // driverXbox.y().onTrue(arm.setAngleCommand(120.0));
     driverXbox.a().onTrue(arm.setAngleCommand(ArmStates.STOW));
     driverXbox.x().whileTrue(intake.ejectCommand());
     driverXbox.x().onFalse(intake.stopCommand());

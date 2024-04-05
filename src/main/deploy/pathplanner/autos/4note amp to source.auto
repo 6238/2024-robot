@@ -8,13 +8,19 @@
         {
           "type": "named",
           "data": {
+            "name": "intakePosition"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "spinUp"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 1.0
           }
         },
         {
