@@ -270,6 +270,7 @@ public class RobotContainer {
 
     // #region LED commands
     new Trigger(intake::intakeIsStalled).whileTrue(led.indicateIntookCommand());
+    new Trigger(intake::intakeIsStalled).onFalse(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
     operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     // #endregion
