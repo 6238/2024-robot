@@ -269,7 +269,7 @@ public class RobotContainer {
     RobotModeTriggers.disabled().onTrue(new InstantCommand(() -> {driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0);}).ignoringDisable(true));
 
     // #region LED commands
-    new Trigger(intake::intakeIsStalled).whileTrue(led.indicateIntookCommand());
+    new Trigger(intake::intakeIsStalled).onTrue(led.indicateIntookCommand());
     new Trigger(intake::intakeIsStalled).onFalse(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
     operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
