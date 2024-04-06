@@ -53,12 +53,12 @@ public class PopcornCamera {
         if (ally.isEmpty()) {
             return true;
         } else {
-            if (ally.get() == Alliance.Blue) {
-                    inRange = pose.estimatedPose.getX() < 3.5;
-                } else {
-                    inRange = pose.estimatedPose.getX() > 16.55445;
-                }
-            return inRange;
+            // if (ally.get() == Alliance.Blue) {
+            //         inRange = pose.estimatedPose.getX() < 3.5;
+            //     } else {
+            //         inRange = pose.estimatedPose.getX() > 16.55445;
+            //     }
+            return true;
         }
     }
 }

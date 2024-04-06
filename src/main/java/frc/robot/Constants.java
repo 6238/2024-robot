@@ -62,14 +62,14 @@ public final class Constants {
     public static final double maxRPM = 5700.0;
   }
   public static class OuttakeGainsAmp {
-    public static final double kP = 0.0075;
+    public static final double kP = 0.02;
     public static final double kI = 5e-6;
     public static final double kD = 0.0;
     public static final double kIz = 0.0; 
     public static final double kFF = 0.0; 
     public static final double kMaxOutput = 1; 
     public static final double kMinOutput = -1;
-    public static final double maxRPM = 5700.0;
+    public static final double maxRPM = 1000.0;
   }
 
   public static final Matrix<N3, N1> VISION_STDDEV = new Matrix<N3, N1>(N3.instance, N1.instance, new double[] {2.0, 2.0, 2.5});
