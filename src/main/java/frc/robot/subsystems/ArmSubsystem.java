@@ -96,9 +96,9 @@ public class ArmSubsystem extends SubsystemBase {
         motor3.setControl(new Follower(motor1.getDeviceID(), false));
         motor3.setNeutralMode(NeutralModeValue.Brake);
         
-        SmartDashboard.putNumber("regressionA", -1.22533);
-        SmartDashboard.putNumber("regressionB", 12.1372);
-        SmartDashboard.putNumber("regressionC", 30.6778);
+        // SmartDashboard.putNumber("regressionA", -1.22533);
+        // SmartDashboard.putNumber("regressionB", 12.1372);
+        // SmartDashboard.putNumber("regressionC", 30.6778);
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -266,8 +266,8 @@ public class ArmSubsystem extends SubsystemBase {
         // SmartDashboard.putNumberArray("motor current draw", new double[] { motor1.getTorqueCurrent().getValue(),
                 // motor2.getTorqueCurrent().getValue(), motor3.getTorqueCurrent().getValue() });
 
-        SmartDashboard.putNumber("sensor value in turns", sensorTalon.getSelectedSensorPosition() * (1.0 / 4096.0));
-        SmartDashboard.putNumber("raw sensor value", sensorTalon.getSelectedSensorPosition());
+        // SmartDashboard.putNumber("sensor value in turns", sensorTalon.getSelectedSensorPosition() * (1.0 / 4096.0));
+        // SmartDashboard.putNumber("raw sensor value", sensorTalon.getSelectedSensorPosition());
         SmartDashboard.putNumber("falcon position", motor1.getPosition().getValue());
     }
 
