@@ -96,9 +96,9 @@ public class ArmSubsystem extends SubsystemBase {
         motor3.setControl(new Follower(motor1.getDeviceID(), false));
         motor3.setNeutralMode(NeutralModeValue.Brake);
         
-        // SmartDashboard.putNumber("regressionA", -1.22533);
-        // SmartDashboard.putNumber("regressionB", 12.1372);
-        // SmartDashboard.putNumber("regressionC", 30.6778);
+        SmartDashboard.putNumber("regressionA", -1.22533);
+        SmartDashboard.putNumber("regressionB", 12.1372);
+        SmartDashboard.putNumber("regressionC", 30.6778);
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -153,9 +153,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getArmAngle(double dist) {
-        double a = SmartDashboard.getNumber("regressionA", -2.34149);
-        double b = SmartDashboard.getNumber("regressionB", 20.0303);
-        double c = SmartDashboard.getNumber("regressionC", 4.88624);
+        double a = SmartDashboard.getNumber("regressionA", -1.22533);
+        double b = SmartDashboard.getNumber("regressionB", 12.1372);
+        double c = SmartDashboard.getNumber("regressionC", 30.6778);
         double angle = a * Math.pow(dist, 2) + b * dist + c;
         if (angle > 19 && angle < 110) {
             setpoint = angle;
