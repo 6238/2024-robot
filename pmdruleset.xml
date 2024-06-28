@@ -51,9 +51,6 @@
     <rule ref="category/java/design.xml/UselessOverridingMethod" />
     <rule ref="category/java/design.xml/UseUtilityClass" />
 
-
-
-
     <!--Documentation-->
     <rule ref="category/java/documentation.xml/CommentContent" />
     <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor" />
