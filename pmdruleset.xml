@@ -47,6 +47,12 @@
     <rule ref="category/java/design.xml/SimplifyBooleanExpressions" />
     <rule ref="category/java/design.xml/SimplifyBooleanReturns" />
     <rule ref="category/java/design.xml/SimplifyConditional" />
+    <rule ref="category/java/design.xml/SwitchDensity" />
+    <rule ref="category/java/design.xml/UselessOverridingMethod" />
+    <rule ref="category/java/design.xml/UseUtilityClass" />
+
+
+
 
     <!--Documentation-->
     <rule ref="category/java/documentation.xml/CommentContent" />
