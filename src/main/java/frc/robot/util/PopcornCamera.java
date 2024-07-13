@@ -29,7 +29,7 @@ public class PopcornCamera {
     public Optional<EstimatedRobotPose> update() {
         if (!cam.isConnected()) {
             camDisconnected.set(true);
-            DataLogManager.log("Skipping pose update for camera " + cam.getName() + " due to disconnect!");
+            // DataLogManager.log("Skipping pose update for camera " + cam.getName() + " due to disconnect!");
             return Optional.empty();
         } else {
             camDisconnected.set(false);

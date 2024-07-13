@@ -71,7 +71,7 @@ public class RobotContainer {
 
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
-  private final AmpSubsystem amp = new AmpSubsystem();
+  // private final AmpSubsystem amp = new AmpSubsystem();
   private final LEDSubsystem led = new LEDSubsystem();
 
   File jsonDirectory;
@@ -133,7 +133,7 @@ public class RobotContainer {
     ); // Rotation for FRC is CCW-positive, so need to invert sign
 
     arm.setDefaultCommand(arm.runPIDCommand());
-    amp.setDefaultCommand(amp.runPIDCommand());
+    // amp.setDefaultCommand(amp.runPIDCommand());
       
     swerveSubsystem.setDefaultCommand(driveCmd);
 
@@ -158,7 +158,7 @@ public class RobotContainer {
     driverXbox.a().onTrue(arm.setAngleCommand(ArmStates.STOW));
     driverXbox.x().whileTrue(intake.ejectCommand());
     driverXbox.x().onFalse(intake.stopCommand());
-    operatorXbox.x().onTrue(amp.runPIDCommand(AmpStates.STOW));
+    // operatorXbox.x().onTrue(amp.runPIDCommand(AmpStates.STOW));
     // #region testing commands
     // // driverXbox.x().whileTrue(new RepeatCommand(new InstantCommand(swerveSubsystem::moveVerySlowly)));
     // driverXbox.b().onTrue(new SequentialCommandGroup(
@@ -219,36 +219,36 @@ public class RobotContainer {
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
-    driverXbox.rightBumper().onTrue(new ParallelCommandGroup(
-      intake.stopCommand(),
-      new InstantCommand(() -> amp.motor1.set(0))
-    ));
+    // driverXbox.rightBumper().onTrue(new ParallelCommandGroup(
+    //   intake.stopCommand(),
+    //   new InstantCommand(() -> amp.motor1.set(0))
+    // ));
 
     operatorXbox.rightBumper().onTrue(new ParallelCommandGroup(
-      intake.stopCommand(),
-      new InstantCommand(() -> amp.motor1.set(0))
+      intake.stopCommand()
+      // new InstantCommand(() -> amp.motor1.set(0))
     ));
 
-    operatorXbox.b().onTrue(new SequentialCommandGroup(
-      new InstantCommand(() -> intake.setMotors(0.0, 0.0)),
-      new WaitCommand(.25),
-      arm.setAngleCommand(ArmStates.INTAKE),
-      new WaitCommand(.2),
-      amp.runPIDCommand(AmpStates.TRANSFER),
-      arm.runPIDwithAngle(ArmStates.TRANSFER),
-      new WaitCommand(1),
-      new TransferP1Command(intake, amp),
-      new TransferP2Command(intake, amp)
-    ));
+    // operatorXbox.b().onTrue(new SequentialCommandGroup(
+    //   new InstantCommand(() -> intake.setMotors(0.0, 0.0)),
+    //   new WaitCommand(.25),
+    //   arm.setAngleCommand(ArmStates.INTAKE),
+    //   new WaitCommand(.2),
+    //   amp.runPIDCommand(AmpStates.TRANSFER),
+    //   arm.runPIDwithAngle(ArmStates.TRANSFER),
+    //   new WaitCommand(1),
+    //   new TransferP1Command(intake, amp),
+    //   new TransferP2Command(intake, amp)
+    // ));
 
-    operatorXbox.leftTrigger().onTrue(amp.runPIDCommand(AmpStates.SHOOT));
+    // operatorXbox.leftTrigger().onTrue(amp.runPIDCommand(AmpStates.SHOOT));
 
-    operatorXbox.rightTrigger().onTrue(new SequentialCommandGroup(
-      new InstantCommand(() -> amp.motor1.set(-.6)),
-      new WaitCommand(1),
-      new InstantCommand(() -> amp.motor1.set(0)),
-      amp.runPIDCommand(AmpStates.STOW)
-    ));
+    // operatorXbox.rightTrigger().onTrue(new SequentialCommandGroup(
+    //   // new InstantCommand(() -> amp.motor1.set(-.6)),
+    //   // new WaitCommand(1),
+    //   // new InstantCommand(() -> amp.motor1.set(0)),
+    //   // amp.runPIDCommand(AmpStates.STOW)
+    // ));
 
     // driverXbox.leftBumper().onTrue(intake.startOutake())
 
