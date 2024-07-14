@@ -224,10 +224,10 @@ public class RobotContainer {
     //   new InstantCommand(() -> amp.motor1.set(0))
     // ));
 
-    operatorXbox.rightBumper().onTrue(new ParallelCommandGroup(
-      intake.stopCommand()
-      // new InstantCommand(() -> amp.motor1.set(0))
-    ));
+    // operatorXbox.rightBumper().onTrue(new ParallelCommandGroup(
+    //   intake.stopCommand()
+    //   // new InstantCommand(() -> amp.motor1.set(0))
+    // ));
 
     // operatorXbox.b().onTrue(new SequentialCommandGroup(
     //   new InstantCommand(() -> intake.setMotors(0.0, 0.0)),
@@ -273,8 +273,8 @@ public class RobotContainer {
     // #region LED commands
     new Trigger(intake::intakeIsStalled).onTrue(led.indicateIntookCommand());
     new Trigger(intake::intakeIsStalled).onFalse(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
-    operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
-    operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
+    // operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
+    // operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     // #endregion
   }
 
