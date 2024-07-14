@@ -72,7 +72,7 @@ public class RobotContainer {
   private final IntakeOuttakeSubsystem intake = new IntakeOuttakeSubsystem();
   private final ArmSubsystem arm = new ArmSubsystem();
   // private final AmpSubsystem amp = new AmpSubsystem();
-  private final LEDSubsystem led = new LEDSubsystem();
+  // private final LEDSubsystem led = new LEDSubsystem();
 
   File jsonDirectory;
 
@@ -139,7 +139,6 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Path", autoChooser);
-    SmartDashboard.putNumber("armShootingSetpoint", 37.0);
   }
 
   /**
@@ -212,7 +211,7 @@ public class RobotContainer {
     // SmartDashboard.putNumber("armSetpointTest", 75.0);
     // driverXbox.b().onTrue(new ParallelCommandGroup(intake.setMotors(0, () -> SmartDashboard.getNumber("shooterRPM", 1000)), arm.setAngleCommand(() -> SmartDashboard.getNumber("armSetpointTest", 75.0))));
     driverXbox.b().whileTrue(new SequentialCommandGroup(intake.startOutake(), new AutoArmCommand(arm, () -> swerveSubsystem.getPose().getX(), () -> swerveSubsystem.getPose().getY())));
-    driverXbox.y().onTrue(new ParallelCommandGroup(intake.startOutake(), arm.setAngleCommand(() -> SmartDashboard.getNumber("armShootingSetpoint", 43.0))));
+    driverXbox.y().onTrue(new ParallelCommandGroup(intake.startOutake(), arm.setAngleCommand(42.0)));
     // SmartDashboard.putNumber("setpoint2", 75);
     // driverXbox.b().whileTrue(new ParallelCommandGroup(intake.startOutake(), arm.setAngleCommand(() -> SmartDashboard.getNumber("setpoint2", 30))));
 
@@ -270,8 +269,8 @@ public class RobotContainer {
     RobotModeTriggers.disabled().onTrue(new InstantCommand(() -> {driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0);}).ignoringDisable(true));
 
     // #region LED commands
-    new Trigger(intake::intakeIsStalled).onTrue(led.indicateIntookCommand());
-    new Trigger(intake::intakeIsStalled).onFalse(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
+    // new Trigger(intake::intakeIsStalled).onTrue(led.indicateIntookCommand());
+    // new Trigger(intake::intakeIsStalled).onFalse(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     // operatorXbox.leftBumper().onTrue(led.indicateNeedNoteCommand());
     // operatorXbox.rightBumper().onTrue(led.setAnimationToAllianceColorCommand(DriverStation.getAlliance()));
     // #endregion
