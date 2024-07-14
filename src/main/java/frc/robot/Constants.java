@@ -46,7 +46,7 @@ public final class Constants {
   }
   public static final double MIN_DELTA_V = 0;
   public static final double MIN_V = 60;
-  public static final double SHOOT_DELAY = 3;
+  public static final double SHOOT_DELAY = 1.5;
   public static final double NUDGE_SPEED = .4;
 
   public static final int ARM_ENCODER_ZERO = 3212;

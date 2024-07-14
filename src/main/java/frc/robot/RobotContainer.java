@@ -219,10 +219,9 @@ public class RobotContainer {
     // Left bumper moves to stowed position
     // driverXbox.leftBumper().onTrue(arm.setAngleCommand(ArmStates.STOW));
     // Right bumper stops intake
-    // driverXbox.rightBumper().onTrue(new ParallelCommandGroup(
-    //   intake.stopCommand(),
-    //   new InstantCommand(() -> amp.motor1.set(0))
-    // ));
+    driverXbox.rightBumper().onTrue(new ParallelCommandGroup(
+      intake.stopCommand()
+    ));
 
     // operatorXbox.rightBumper().onTrue(new ParallelCommandGroup(
     //   intake.stopCommand()
