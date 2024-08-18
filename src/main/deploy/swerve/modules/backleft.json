@@ -1,12 +1,12 @@
 {
   "drive": {
-    "type": "sparkmax",
-    "id": 22,
+    "type": "talonfx",
+    "id": 31,
     "canbus": null
   },
   "angle": {
-    "type": "sparkmax",
-    "id": 23,
+    "type": "talonfx",
+    "id": 32,
     "canbus": null
   },
   "encoder": {
