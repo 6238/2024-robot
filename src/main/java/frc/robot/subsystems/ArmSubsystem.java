@@ -44,11 +44,11 @@ public class ArmSubsystem extends SubsystemBase {
     public double setpoint = 0;
 
     private TalonFXConfiguration configs = new TalonFXConfiguration();
-
-    private final TalonFX motor1 = new TalonFX(11);
-    private final TalonFX motor2 = new TalonFX(12);
-    private final TalonFX motor3 = new TalonFX(13);
-
+    
+    private final TalonFX motor1 = new TalonFX(51);
+    private final TalonFX motor2 = new TalonFX(52);
+    private final TalonFX motor3 = new TalonFX(53);
+  
     private final TalonSRX sensorTalon = new TalonSRX(14);
 
     Orchestra orch = new Orchestra();

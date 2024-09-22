@@ -30,12 +30,12 @@ public final class Constants {
   public static final String PHOTONCAMERA_NAME = "Arducam_A";
   public static final String PHOTONCAMERA_NAME2 = "Arducam_B";
 
-  public static class IDs {
-    public static final int INTAKE_MOTOR = 2;
-    public static final int OUTTAKE_TOP_MOTOR = 3;
-    public static final int OUTTAKE_BOTTOM_MOTOR = 4;
-    public static final int ANGLE_MOTOR = 31;
-    public static final int ROLLER_MOTOR = 30;
+  public final class IDs {
+    public static final int INTAKE_MOTOR = 41;
+    public static final int OUTTAKE_TOP_MOTOR = 42;
+    public static final int OUTTAKE_BOTTOM_MOTOR = 43;
+    public static final int ANGLE_MOTOR = 62;
+    public static final int ROLLER_MOTOR = 61;
   }
 
   public static class Speeds {
